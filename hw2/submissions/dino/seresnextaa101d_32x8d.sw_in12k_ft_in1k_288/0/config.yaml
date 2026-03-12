@@ -1,0 +1,126 @@
+dataloader:
+  evaluator: {_target_: detectron2.evaluation.COCOEvaluator, dataset_name: valid, output_dir: logs/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0}
+  test:
+    _target_: detectron2.data.build_detection_test_loader
+    dataset: {_target_: detectron2.data.get_detection_dataset_dicts, filter_empty: false, names: hw2_test}
+    mapper:
+      _target_: detrex.data.DetrDatasetMapper
+      augmentation:
+      - {_target_: detectron2.data.transforms.ResizeShortestEdge, max_size: 1344, short_edge_length: 1000}
+      augmentation_with_crop: null
+      img_format: RGB
+      is_train: false
+      mask_on: false
+    num_workers: 0
+  train:
+    _target_: detectron2.data.build_detection_train_loader
+    dataset: {_target_: detectron2.data.get_detection_dataset_dicts, names: train}
+    mapper:
+      _target_: detrex.data.DetrDatasetMapper
+      augmentation:
+      - {_target_: detectron2.data.transforms.RandomFlip}
+      - _target_: detectron2.data.transforms.ResizeShortestEdge
+        max_size: 1344
+        sample_style: choice
+        short_edge_length: [480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800]
+      augmentation_with_crop:
+      - {_target_: detectron2.data.transforms.RandomFlip}
+      - _target_: detectron2.data.transforms.ResizeShortestEdge
+        sample_style: choice
+        short_edge_length: [384, 512, 608]
+      - _target_: detectron2.data.transforms.RandomCrop
+        crop_size: [384, 608]
+        crop_type: absolute_range
+      - _target_: detectron2.data.transforms.ResizeShortestEdge
+        max_size: 1344
+        sample_style: choice
+        short_edge_length: [480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800]
+      img_format: RGB
+      is_train: true
+      mask_on: false
+    num_workers: 4
+    total_batch_size: 2
+lr_multiplier:
+  _target_: detectron2.solver.WarmupParamScheduler
+  scheduler:
+    _target_: fvcore.common.param_scheduler.MultiStepParamScheduler
+    milestones: [202500, 243000]
+    num_updates: 270000
+    values: [1.0, 0.1, 0.01]
+  warmup_factor: 0.001
+  warmup_length: 0.003703703703703704
+  warmup_method: linear
+model:
+  _target_: builtins._DINO
+  aux_loss: true
+  backbone:
+    _target_: builtins._TimmBackbone
+    features_only: true
+    in_channels: 3
+    model_name: seresnextaa101d_32x8d.sw_in12k_ft_in1k_288
+    norm_layer: !!python/name:builtins._FrozenBN ''
+    out_indices: [2, 3, 4]
+    pretrained: false
+  box_noise_scale: 1.0
+  criterion:
+    _target_: projects.dino.modeling.DINOCriterion
+    alpha: 0.25
+    gamma: 2.0
+    loss_class_type: focal_loss
+    matcher: {_target_: detrex.modeling.HungarianMatcher, alpha: 0.25, cost_bbox: 5.0, cost_class: 2.0, cost_class_type: focal_loss_cost, cost_giou: 2.0, gamma: 2.0}
+    num_classes: 10
+    two_stage_binary_cls: false
+    weight_dict: {loss_bbox: 5.0, loss_bbox_0: 5.0, loss_bbox_1: 5.0, loss_bbox_2: 5.0, loss_bbox_3: 5.0, loss_bbox_4: 5.0, loss_bbox_dn: 5.0, loss_bbox_dn_0: 5.0, loss_bbox_dn_1: 5.0, loss_bbox_dn_2: 5.0, loss_bbox_dn_3: 5.0, loss_bbox_dn_4: 5.0, loss_bbox_dn_enc: 5.0, loss_bbox_enc: 5.0, loss_class: 1, loss_class_0: 1, loss_class_1: 1, loss_class_2: 1, loss_class_3: 1, loss_class_4: 1, loss_class_dn: 1, loss_class_dn_0: 1, loss_class_dn_1: 1, loss_class_dn_2: 1, loss_class_dn_3: 1, loss_class_dn_4: 1, loss_class_dn_enc: 1, loss_class_enc: 1, loss_giou: 2.0, loss_giou_0: 2.0, loss_giou_1: 2.0, loss_giou_2: 2.0, loss_giou_3: 2.0, loss_giou_4: 2.0, loss_giou_dn: 2.0, loss_giou_dn_0: 2.0, loss_giou_dn_1: 2.0, loss_giou_dn_2: 2.0, loss_giou_dn_3: 2.0, loss_giou_dn_4: 2.0, loss_giou_dn_enc: 2.0, loss_giou_enc: 2.0}
+  device: cuda
+  dn_number: 100
+  embed_dim: 256
+  input_format: RGB
+  label_noise_ratio: 0.5
+  neck:
+    _target_: detrex.modeling.ChannelMapper
+    in_features: [p2, p3, p4]
+    input_shapes:
+      p2: !!python/object:detectron2.layers.shape_spec.ShapeSpec {channels: 512, height: null, stride: null, width: null}
+      p3: !!python/object:detectron2.layers.shape_spec.ShapeSpec {channels: 1024, height: null, stride: null, width: null}
+      p4: !!python/object:detectron2.layers.shape_spec.ShapeSpec {channels: 2048, height: null, stride: null, width: null}
+    kernel_size: 1
+    norm_layer: {_target_: torch.nn.GroupNorm, num_channels: 256, num_groups: 32}
+    num_outs: 4
+    out_channels: 256
+  num_classes: 10
+  num_queries: 900
+  pixel_mean: [123.675, 116.28, 103.53]
+  pixel_std: [58.395, 57.12, 57.375]
+  position_embedding: {_target_: detrex.layers.PositionEmbeddingSine, normalize: true, num_pos_feats: 128, offset: -0.5, temperature: 10000}
+  transformer:
+    _target_: projects.dino.modeling.DINOTransformer
+    decoder: {_target_: projects.dino.modeling.DINOTransformerDecoder, attn_dropout: 0.0, embed_dim: 256, feedforward_dim: 2048, ffn_dropout: 0.0, num_feature_levels: '${..num_feature_levels}', num_heads: 8, num_layers: 6, return_intermediate: true, use_checkpoint: false}
+    encoder: {_target_: projects.dino.modeling.DINOTransformerEncoder, attn_dropout: 0.0, embed_dim: 256, feedforward_dim: 2048, ffn_dropout: 0.0, num_feature_levels: '${..num_feature_levels}', num_heads: 8, num_layers: 6, post_norm: false, use_checkpoint: false}
+    num_feature_levels: 4
+    two_stage_num_proposals: ${..num_queries}
+  vis_period: 0
+optimizer:
+  _target_: torch.optim.AdamW
+  betas: [0.9, 0.999]
+  lr: 0.0001
+  params: {_target_: detectron2.solver.get_default_optimizer_params, base_lr: '${..lr}', lr_factor_func: !!python/name:None.%3Clambda%3E '', weight_decay_norm: 0.0}
+  weight_decay: 0.0001
+train:
+  amp: {enabled: false}
+  checkpointer: {max_to_keep: 5, period: 5000}
+  clip_grad:
+    enabled: true
+    params: {max_norm: 0.1, norm_type: 2}
+  ddp: {broadcast_buffers: false, find_unused_parameters: false, fp16_compression: false}
+  device: cuda
+  eval_period: 5000
+  fast_dev_run: {enabled: false}
+  init_checkpoint: checkpoints/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0/best_model.pth
+  log_period: 20
+  max_iter: 270000
+  model_ema: {decay: 0.9998, device: '', enabled: true, use_ema_weights_for_eval_only: true}
+  output_dir: /home/longpm/works/selected-topics-nycu/hw2/submissions/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0
+  seed: -1
+  wandb:
+    enabled: false
+    params: {dir: ./wandb_output, name: dino_seresnextaa101d_exp0, project: hw2_detrex}

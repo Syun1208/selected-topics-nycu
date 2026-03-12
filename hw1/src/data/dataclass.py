@@ -1,5 +1,16 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from pathlib import Path
+from typing import List, Optional
+
+
+@dataclass
+class LoraConfig:
+    enabled: bool = False
+    rank: int = 8
+    alpha: float = 16.0
+    dropout: float = 0.0
+    target_modules: List[str] = field(default_factory=lambda: ["Linear"])
+    save_lora_only: bool = False
 
 
 @dataclass
@@ -9,6 +20,7 @@ class ModelConfig:
     num_classes: int = 100
     drop_rate: float = 0.2
     checkpoint: Optional[str] = None
+    lora: LoraConfig = field(default_factory=LoraConfig)
 
 
 @dataclass
@@ -35,8 +47,11 @@ class TrainingConfig:
     warmup_epochs: int = 5
     label_smoothing: float = 0.1
     gradient_clip: float = 1.0
-    mixup_alpha: float = 0.2
+    mixup_alpha: float = 0.0
     accumulation_steps: int = 1
+    use_class_weights: bool = True
+    use_weighted_sampler: bool = True
+    freeze_batch_normalize: bool = False
 
 
 @dataclass
@@ -87,3 +102,20 @@ class EpochResult:
 class Prediction:
     image_name: str
     label: int
+
+
+@dataclass
+class AugmentationJob:
+    class_name: str
+    src_dir: Path
+    dst_dir: Path
+    target: int
+    n_add: int
+
+
+@dataclass
+class PathConfig:
+    train_dir: Path = field(default_factory=lambda: Path(
+        __file__).resolve().parents[2] / "data" / "train_strong_previous")
+    aug_dir: Path = field(default_factory=lambda: Path(
+        __file__).resolve().parents[2] / "data" / "train_strong")

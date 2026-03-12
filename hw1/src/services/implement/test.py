@@ -8,9 +8,8 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from data.dataclass import Prediction, TestConfig
-from data.dataset import TestDataset, get_val_transforms_v1
-from models.resnet_model import ResNetClassifier
-from models.resnet_nn import ResNetNNClassifier
+from data.dataset import TestDataset, get_val_transforms
+from models.model_factory import ModelFactory
 from services.interface.test import TesterInterface
 from utils.logger import get_logger
 
@@ -21,8 +20,7 @@ class Tester(TesterInterface):
         self.model: Optional[torch.nn.Module] = None
         self.test_loader: Optional[DataLoader] = None
         self.device = torch.device(
-            f"cuda:{os.environ.get('LOCAL_RANK', 0)}" if torch.cuda.is_available() else "cpu"
-        )
+            f"cuda:{os.environ.get('LOCAL_RANK', 0)}" if torch.cuda.is_available() else "cpu")
         self.logger = get_logger("tester")
 
     def setup(self, config: TestConfig) -> None:
@@ -34,7 +32,7 @@ class Tester(TesterInterface):
 
     def _build_dataloader(self) -> None:
         cfg = self.config
-        transform = get_val_transforms_v1(
+        transform = get_val_transforms(
             resize_size=cfg.data.resize_size, crop_size=cfg.data.crop_size
         )
         test_ds = TestDataset(cfg.data.test_dir, transform=transform)
@@ -48,10 +46,7 @@ class Tester(TesterInterface):
 
     def _load_model(self) -> None:
         cfg = self.config.model
-        model_cls = (
-            ResNetNNClassifier if cfg.backbone.startswith("resnet_nn:")
-            else ResNetClassifier
-        )
+        model_cls = ModelFactory.create(cfg=cfg)
         backbone_name = (
             cfg.backbone[len("resnet_nn:"):]
             if cfg.backbone.startswith("resnet_nn:")
@@ -70,7 +65,10 @@ class Tester(TesterInterface):
         predictions: List[Prediction] = []
         for images, image_names in tqdm(self.test_loader, desc="Inference"):
             images = images.to(self.device, non_blocking=True)
-            with torch.amp.autocast(device_type=self.device.type, enabled=self.device.type == "cuda"):
+            with torch.amp.autocast(
+                device_type=self.device.type,
+                enabled=self.device.type == "cuda"
+            ):
                 outputs = self.model(images)
             pred_labels = outputs.argmax(dim=1).cpu().tolist()
             for name, label in zip(image_names, pred_labels):

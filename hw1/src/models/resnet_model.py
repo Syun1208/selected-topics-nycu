@@ -6,15 +6,6 @@ import torch.nn as nn
 
 
 class ResNetClassifier(nn.Module):
-    """
-    Image classifier built on top of a timm ResNet backbone.
-
-    Args:
-        backbone: Name of the timm ResNet model (see RESNET_BACKBONES).
-        num_classes: Number of output classes.
-        pretrained: Load ImageNet pretrained weights.
-        drop_rate: Dropout rate applied before the classifier head.
-    """
 
     def __init__(
         self,
@@ -41,7 +32,7 @@ class ResNetClassifier(nn.Module):
     @property
     def num_classes(self) -> int:
         return self.model.num_classes
-    
+
     @property
     def pretrained_cfg(self) -> Dict[str, Any]:
         return self.model.pretrained_cfg
@@ -53,6 +44,9 @@ class ResNetClassifier(nn.Module):
         model = cls(
             backbone=backbone, num_classes=num_classes, pretrained=False
         )
-        state = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+        state = torch.load(
+            checkpoint_path,
+            map_location="cpu",
+            weights_only=True)
         model.load_state_dict(state["model_state_dict"])
         return model

@@ -1,0 +1,49 @@
+# Available architectures (change 'architecture' and update 'config' to matching model.py):
+#   AlignDETR        → configs/detrex/projects/align_detr/        (current)
+#   DINO             → configs/detrex/projects/dino/
+#   DeformableDETR   → configs/detrex/projects/deformable_detr/
+#   HDeformableDETR  → configs/detrex/projects/h_deformable_detr/
+#   DNDeformableDETR → configs/detrex/projects/dn_deformable_detr/
+#   DabDeformableDETR→ configs/detrex/projects/dab_deformable_detr/
+#   DABDETR          → configs/detrex/projects/dab_detr/
+#   DNDETR           → configs/detrex/projects/dn_detr/
+#   ConditionalDETR  → configs/detrex/projects/conditional_detr/
+#   AnchorDETR       → configs/detrex/projects/anchor_detr/
+#   DETR             → configs/detrex/projects/detr/
+#   FOCUS            → configs/detrex/projects/focus_detr/
+model:
+  name: seresnextaa101d_32x8d.sw_in12k_ft_in1k_288
+  architecture: AlignDETR
+  config: configs/train/aligndetr/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/model.py
+  pretrained_backbone: "seresnextaa101d_32x8d.sw_in12k_ft_in1k_288"
+  num_classes: 10
+
+dataset:
+  train_json: data/clean_train.json
+  train_images_dir: data/clean_train
+  valid_json: data/valid.json
+  valid_images_dir: data/valid
+  test_images_dir: data/test
+  register_train: train
+  register_valid: valid
+  class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+training:
+  max_iter: 100000
+
+  batch_size: 1
+  learning_rate: 1.0e-4
+  weight_decay: 1.0e-4
+
+  num_workers: 4
+  amp: false
+  eval_period: 5000
+  log_period: 20
+  checkpoint_period: 5000
+  resume: false
+  init_checkpoint: ""
+  clip_grad:
+    enabled: true
+    max_norm: 0.1
+
+output_dir: logs/aligndetr/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0

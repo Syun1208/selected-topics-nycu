@@ -1,0 +1,45 @@
+model:
+  backbone: timm/resnet152d.ra2_in1k
+  pretrained: true
+  num_classes: 100
+  drop_rate: 0.3
+  checkpoint: "/home/longpm/works/selected-topics-nycu/hw1/checkpoints/resnet152d.ra2_in1k_imbalance/epoch_005_acc0.8967.pth"
+  lora:
+    enabled: false
+    rank: 8
+    alpha: 16.0
+    dropout: 0.0
+    target_modules:
+      - Linear
+    save_lora_only: false
+
+data:
+  train_dir: data/train_strong
+  val_dir: data/val
+  image_size: 320
+  resize_size: 360
+  crop_size: 320
+  batch_size: 64
+  num_workers: 4
+  use_augmentation: true
+
+training:
+  epochs: 14
+  lr: 1.0e-4              
+  min_lr: 1.0e-6
+  weight_decay: 5.0e-4     
+  optimizer: adamw          
+  scheduler: cosine        
+  warmup_epochs: 3
+  label_smoothing: 0.05
+  gradient_clip: 1.0
+  mixup_alpha: 0.1          
+  accumulation_steps: 4
+  freeze_batch_normalize: false
+
+
+output:
+  checkpoint_dir: checkpoints/resnet152d.ra2_in1k_imbalance
+  log_dir: logs/resnet152d.ra2_in1k_imbalance
+  save_top_k: 10
+  

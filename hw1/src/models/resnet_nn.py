@@ -23,7 +23,7 @@ class ResNetNNClassifier(nn.Module):
             num_classes=num_classes
         )
         self.backbone.requires_grad_(False)
-        backbone_channels = self.backbone.num_features  # e.g. 2048
+        backbone_channels = self.backbone.num_features
 
         self.pool = nn.AdaptiveAvgPool2d(1)
         self.dropout = nn.Dropout(p=drop_rate)
@@ -65,13 +65,19 @@ class ResNetNNClassifier(nn.Module):
             pretrained=False,
             drop_rate=drop_rate,
         )
-        state = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+        state = torch.load(
+            checkpoint_path,
+            map_location="cpu",
+            weights_only=True)
         model.load_state_dict(state["model_state_dict"])
         return model
 
 
 if __name__ == "__main__":
-    model = ResNetNNClassifier(backbone="resnet50", num_classes=100, pretrained=False)
+    model = ResNetNNClassifier(
+        backbone="resnet50",
+        num_classes=100,
+        pretrained=False)
     total = sum(p.numel() for p in model.parameters())
     print(f"Total parameters: {total:,}  ({total / 1e6:.2f}M)")
     x = torch.randn(2, 3, 224, 224)

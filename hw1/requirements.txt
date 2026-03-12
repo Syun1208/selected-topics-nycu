@@ -7,3 +7,10 @@ tqdm
 pillow
 pyyaml
 tensorboard
+albumentations
+opencv-python
+cleanlab
+cleanvision
+matplotlib
+seaborn
+scikit-learn

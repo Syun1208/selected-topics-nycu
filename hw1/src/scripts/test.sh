@@ -8,7 +8,7 @@ cd "$SCRIPT_DIR/../.."
 # Default arguments
 CONFIG="${CONFIG:-configs/test.yaml}"
 SEED=42
-DEVICES=7  
+DEVICES=6
 
 export CUDA_VISIBLE_DEVICES="$DEVICES"
 

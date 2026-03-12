@@ -1,0 +1,14 @@
+# AP: 
+model:
+  name: resnet50.a1_in1k
+  architecture: AlignDETR
+  config: configs/train/aligndetr/resnet50.a1_in1k/model.py
+  num_classes: 10
+
+checkpoint: checkpoints/aligndetr/resnet50.a1_in1k/0/best_model.pth
+
+dataset:
+  test_images_dir: data/test
+  class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+output_file: submissions/aligndetr/resnet50.a1_in1k/0/pred.json

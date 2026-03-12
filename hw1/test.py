@@ -1,31 +1,37 @@
-import argparse
 import sys
 from pathlib import Path
 
-import yaml
-
-# Make src/ importable
+# Make src/ importable before any src imports
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from src.data.dataclass import (  # noqa: E402
+import argparse
+
+import yaml
+
+from src.utils.seed import set_seed
+from src.services.implement.test import Tester
+from src.data.dataclass import (
     DataConfig,
+    LoraConfig,
     ModelConfig,
     OutputConfig,
     TestConfig,
 )
-from src.services.implement.test import Tester  # noqa: E402
-from src.utils.seed import set_seed  # noqa: E402
 
 
 def load_config(config_path: str) -> TestConfig:
     with open(config_path) as f:
         raw = yaml.safe_load(f)
 
+    model_raw = dict(raw.get("model", {}))
+    lora_raw = model_raw.pop("lora", {})
+    lora_cfg = LoraConfig(**lora_raw)
     model_cfg = ModelConfig(
-        backbone=raw["model"].get("backbone", "resnet50"),
+        backbone=model_raw.get("backbone", "resnet50"),
         pretrained=False,
-        num_classes=raw["model"].get("num_classes", 100),
-        checkpoint=raw["model"].get("checkpoint", None),
+        num_classes=model_raw.get("num_classes", 100),
+        checkpoint=model_raw.get("checkpoint", None),
+        lora=lora_cfg,
     )
     data_raw = raw.get("data", {})
     data_cfg = DataConfig(

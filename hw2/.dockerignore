@@ -1,0 +1,10 @@
+# Exclude large files from the Docker build context
+data/
+checkpoints/
+src/logs/
+wandb_output/
+__pycache__/
+**/__pycache__/
+*.pyc
+.git/
+notebooks/

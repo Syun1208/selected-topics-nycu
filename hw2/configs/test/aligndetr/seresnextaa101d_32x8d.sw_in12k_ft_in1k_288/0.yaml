@@ -1,0 +1,14 @@
+# AP: 0.33
+model:
+  name: seresnextaa101d_32x8d.sw_in12k_ft_in1k_288
+  architecture: AlignDETR
+  config: configs/train/aligndetr/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/model.py
+  num_classes: 10
+
+checkpoint: checkpoints/aligndetr/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0/best_model.pth
+
+dataset:
+  test_images_dir: data/test
+  class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+output_file: submissions/aligndetr/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0/pred.json

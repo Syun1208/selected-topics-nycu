@@ -5,18 +5,38 @@ import torch.nn as nn
 
 
 class BasicBlock(nn.Module):
-    def __init__(self, in_channels: int, out_channels: int, stride: int = 1) -> None:
+    def __init__(
+            self,
+            in_channels: int,
+            out_channels: int,
+            stride: int = 1) -> None:
         super().__init__()
-        self.conv1 = nn.Conv2d(in_channels, out_channels, 3, stride=stride, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(
+            in_channels,
+            out_channels,
+            3,
+            stride=stride,
+            padding=1,
+            bias=False)
         self.bn1 = nn.BatchNorm2d(out_channels)
         self.relu = nn.ReLU(inplace=True)
-        self.conv2 = nn.Conv2d(out_channels, out_channels, 3, padding=1, bias=False)
+        self.conv2 = nn.Conv2d(
+            out_channels,
+            out_channels,
+            3,
+            padding=1,
+            bias=False)
         self.bn2 = nn.BatchNorm2d(out_channels)
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_channels != out_channels:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels, 1, stride=stride, bias=False),
+                nn.Conv2d(
+                    in_channels,
+                    out_channels,
+                    1,
+                    stride=stride,
+                    bias=False),
                 nn.BatchNorm2d(out_channels),
             )
 
@@ -26,7 +46,11 @@ class BasicBlock(nn.Module):
         return self.relu(out + self.shortcut(x))
 
 
-def _make_layer(in_channels: int, out_channels: int, num_blocks: int, stride: int) -> nn.Sequential:
+def _make_layer(
+        in_channels: int,
+        out_channels: int,
+        num_blocks: int,
+        stride: int) -> nn.Sequential:
     layers = [BasicBlock(in_channels, out_channels, stride=stride)]
     for _ in range(1, num_blocks):
         layers.append(BasicBlock(out_channels, out_channels))
@@ -34,16 +58,6 @@ def _make_layer(in_channels: int, out_channels: int, num_blocks: int, stride: in
 
 
 class NeuralNetwork(nn.Module):
-    """
-    Custom image classifier with ~5.3M parameters.
-
-    Architecture: 4-stage residual network with channels [44, 88, 176, 352].
-    Designed for 100-class image classification.
-
-    Args:
-        num_classes: Number of output classes.
-        drop_rate: Dropout rate before the classifier head.
-    """
 
     def __init__(self, num_classes: int = 100, drop_rate: float = 0.0) -> None:
         super().__init__()
@@ -61,7 +75,7 @@ class NeuralNetwork(nn.Module):
         self.layer1 = _make_layer(44, 44, num_blocks=2, stride=1)   # /4
         self.layer2 = _make_layer(44, 88, num_blocks=2, stride=2)   # /8
         self.layer3 = _make_layer(88, 176, num_blocks=2, stride=2)  # /16
-        self.layer4 = _make_layer(176, 352, num_blocks=2, stride=2) # /32
+        self.layer4 = _make_layer(176, 352, num_blocks=2, stride=2)  # /32
 
         self.pool = nn.AdaptiveAvgPool2d(1)
         self.dropout = nn.Dropout(p=drop_rate)
@@ -72,7 +86,8 @@ class NeuralNetwork(nn.Module):
     def _init_weights(self) -> None:
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
+                nn.init.kaiming_normal_(
+                    m.weight, mode="fan_out", nonlinearity="relu")
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.ones_(m.weight)
                 nn.init.zeros_(m.bias)
@@ -100,10 +115,15 @@ class NeuralNetwork(nn.Module):
 
     @classmethod
     def from_checkpoint(
-        cls, checkpoint_path: str, num_classes: int = 100, drop_rate: float = 0.0
-    ) -> "NeuralNetwork":
+            cls,
+            checkpoint_path: str,
+            num_classes: int = 100,
+            drop_rate: float = 0.0) -> "NeuralNetwork":
         model = cls(num_classes=num_classes, drop_rate=drop_rate)
-        state = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+        state = torch.load(
+            checkpoint_path,
+            map_location="cpu",
+            weights_only=True)
         model.load_state_dict(state["model_state_dict"])
         return model
 

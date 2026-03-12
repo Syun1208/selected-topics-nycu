@@ -6,29 +6,33 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+# Make src/ importable
+sys.path.insert(0, str(Path(__file__).parent / "src"))
+
 import torch
 import torch.distributed as dist
 import yaml
 
-# Make src/ importable
-sys.path.insert(0, str(Path(__file__).parent / "src"))
-
-from src.data.dataclass import (  # noqa: E402
+from src.utils.seed import set_seed
+from src.services.implement.train import Trainer
+from src.data.dataclass import (
     DataConfig,
+    LoraConfig,
     ModelConfig,
     OutputConfig,
     TrainConfig,
     TrainingConfig,
 )
-from src.services.implement.train import Trainer  # noqa: E402
-from src.utils.seed import set_seed  # noqa: E402
 
 
 def load_config(config_path: str) -> TrainConfig:
     with open(config_path) as f:
         raw = yaml.safe_load(f)
 
-    model_cfg = ModelConfig(**raw.get("model", {}))
+    model_raw = dict(raw.get("model", {}))
+    lora_raw = model_raw.pop("lora", {})
+    lora_cfg = LoraConfig(**lora_raw)
+    model_cfg = ModelConfig(**model_raw, lora=lora_cfg)
     data_raw = raw.get("data", {})
     data_cfg = DataConfig(
         train_dir=data_raw.get("train_dir", "data/train"),
@@ -80,7 +84,10 @@ def setup_logging(log_dir: str, rank: int) -> None:
     handlers: list[logging.Handler] = [logging.StreamHandler(sys.stdout)]
     if rank == 0:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        handlers.append(logging.FileHandler(log_path / f"train_{timestamp}.log"))
+        handlers.append(
+            logging.FileHandler(
+                log_path /
+                f"train_{timestamp}.log"))
 
     logging.basicConfig(
         level=logging.INFO,
@@ -121,6 +128,7 @@ def main() -> None:
         local_rank=local_rank,
         is_distributed=is_distributed,
     )
+    trainer.model_name = Path(args.config).stem
     trainer.setup(config)
 
     if config.model.checkpoint:
