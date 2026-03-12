@@ -1,0 +1,13 @@
+model:
+  backbone: seresnextaa101d_32x8d.sw_in12k_ft_in1k_288
+  num_classes: 100
+  checkpoint: /home/longpm/works/selected-topics-nycu/hw1/checkpoints/seresnextaa101d_32x8d_sw_in12k_ft_in1k_288/best_model.pth
+
+data:
+  test_dir: data/test
+  image_size: 320
+  batch_size: 64
+  num_workers: 4
+
+output:
+  submission_file: runs/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/prediction.csv
