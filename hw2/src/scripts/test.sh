@@ -3,7 +3,7 @@
 set -euo pipefail
 
 CONFIG="configs/test/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0.yaml"
-GPU_IDS="0,2,4,6"
+GPU_IDS="6"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"

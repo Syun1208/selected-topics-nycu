@@ -61,22 +61,12 @@ def _parse_nafnet_config(config_path: str) -> dict:
 
 
 def parse_gpu_ids(gpu_ids_str: Optional[str]) -> Optional[List[int]]:
-    """Parse a comma-separated GPU IDs string into a list of ints.
-
-    Returns None if the string is empty or None (fall back to --nafnet-device).
-    Examples: '0' → [0], '0,1,2' → [0, 1, 2], '' → None
-    """
     if not gpu_ids_str:
         return None
     return [int(g.strip()) for g in gpu_ids_str.split(",") if g.strip()]
 
 
 def _resolve_device(device: str, gpu_ids: Optional[List[int]]) -> str:
-    """Return the primary torch device string given device and gpu_ids.
-
-    If gpu_ids is provided, the primary device is cuda:<gpu_ids[0]>.
-    Otherwise, device is used as-is.
-    """
     if gpu_ids:
         return f"cuda:{gpu_ids[0]}"
     return device
@@ -88,20 +78,6 @@ def load_nafnet(
     config_path: str = None,
     gpu_ids: Optional[List[int]] = None,
 ):
-    """Load a NAFNet model, optionally reading arch from a YAML config and using multiple GPUs.
-
-    Args:
-        checkpoint_path: Path to a .pth checkpoint. If None, read from
-                         ``path.pretrain_network_g`` in ``config_path``.
-        device:          Torch device string ('cpu' or 'cuda'). Ignored when gpu_ids is set.
-        config_path:     Optional path to a NAFNet YAML config file (e.g. NAFNet-width32.yml).
-                         Architecture params are read from ``network_g`` section.
-        gpu_ids:         Optional list of CUDA GPU IDs (e.g. [0] or [0, 1, 2]).
-                         When set, overrides device; uses DataParallel for multiple GPUs.
-
-    Returns:
-        Loaded, eval()-mode model on the requested device (DataParallel if multiple gpu_ids).
-    """
     import torch
 
     primary_device = _resolve_device(device, gpu_ids)

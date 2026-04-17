@@ -98,7 +98,6 @@ def _apply_cli_opts(yaml_cfg, opts):
 
 
 def _derive_output_dir(config_path: str) -> str:
-    """configs/train/<arch>/<backbone>/<run>.yaml  →  logs/<arch>/<backbone>/<run>"""
     parts = os.path.normpath(config_path).split(os.sep)
     try:
         idx      = parts.index("train")

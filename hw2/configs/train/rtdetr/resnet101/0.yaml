@@ -22,7 +22,7 @@ training:
   learning_rate: 1.0e-4
   weight_decay: 1.0e-4
 
-  num_workers: 4
+  num_workers: 2
   amp: true
   eval_period: 5000
   log_period: 20

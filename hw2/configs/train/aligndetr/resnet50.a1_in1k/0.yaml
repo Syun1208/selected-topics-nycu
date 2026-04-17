@@ -1,16 +1,3 @@
-# Available architectures (change 'architecture' and update 'config' to matching model.py):
-#   AlignDETR        → configs/detrex/projects/align_detr/        (current)
-#   DINO             → configs/detrex/projects/dino/
-#   DeformableDETR   → configs/detrex/projects/deformable_detr/
-#   HDeformableDETR  → configs/detrex/projects/h_deformable_detr/
-#   DNDeformableDETR → configs/detrex/projects/dn_deformable_detr/
-#   DabDeformableDETR→ configs/detrex/projects/dab_deformable_detr/
-#   DABDETR          → configs/detrex/projects/dab_detr/
-#   DNDETR           → configs/detrex/projects/dn_detr/
-#   ConditionalDETR  → configs/detrex/projects/conditional_detr/
-#   AnchorDETR       → configs/detrex/projects/anchor_detr/
-#   DETR             → configs/detrex/projects/detr/
-#   FOCUS            → configs/detrex/projects/focus_detr/
 model:
   name: resnet50.a1_in1k
   architecture: AlignDETR
@@ -29,8 +16,9 @@ dataset:
   class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 training:
-  max_iter: 30000
+  gpu_ids: "0"
 
+  max_iter: 100000
   batch_size: 2
   learning_rate: 1.0e-4
   weight_decay: 1.0e-4
@@ -45,5 +33,3 @@ training:
   clip_grad:
     enabled: true
     max_norm: 0.1
-    
-output_dir: src/logs/aligndetr/resnet50.a1_in1k/0

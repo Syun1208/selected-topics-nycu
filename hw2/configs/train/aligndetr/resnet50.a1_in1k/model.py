@@ -22,12 +22,14 @@ from detectron2.data import (
 )
 from detectron2.evaluation import COCOEvaluator
 from detectron2.layers import FrozenBatchNorm2d, ShapeSpec
+from detectron2.layers.nms import batched_nms
 from detectron2.solver.build import get_default_optimizer_params
+from detectron2.structures import Boxes, Instances
 from detrex.modeling.backbone import TimmBackbone
+from detrex.layers import PositionEmbeddingSine, box_cxcywh_to_xyxy
 import detectron2.data.transforms as T
 
 from detrex.data import DetrDatasetMapper
-from detrex.layers import PositionEmbeddingSine
 from detrex.modeling.neck import ChannelMapper
 from detectron2.solver import WarmupParamScheduler
 from fvcore.common.param_scheduler import MultiStepParamScheduler
@@ -44,8 +46,79 @@ from projects.align_detr.modeling import (
 NUM_CLASSES = 10
 
 
+class _AlignDETRWithNMS(AlignDETR):
+
+    def __init__(
+        self,
+        *args,
+        nms_iou_threshold: float = 0.5,
+        nms_max_per_image: int = 100,
+        nms_pre_topk: int = 1000,
+        score_threshold: float = 0.0,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.nms_iou_threshold = nms_iou_threshold
+        self.nms_max_per_image = nms_max_per_image
+        self.nms_pre_topk = nms_pre_topk
+        self.score_threshold = score_threshold
+
+    def inference(self, box_cls, box_pred, image_sizes):
+        assert len(box_cls) == len(image_sizes)
+        results = []
+
+        bs, n_queries, n_cls = box_cls.shape
+        prob = box_cls.sigmoid()
+
+
+        all_scores = prob.view(bs, n_queries * n_cls)
+        all_indexes = (
+            torch.arange(n_queries * n_cls, device=box_cls.device)
+            .unsqueeze(0)
+            .expand(bs, -1)
+        )
+        all_boxes_idx = torch.div(all_indexes, n_cls, rounding_mode="floor")
+        all_labels = all_indexes % n_cls
+
+
+        boxes_xyxy = box_cxcywh_to_xyxy(box_pred)
+        boxes_exp = torch.gather(
+            boxes_xyxy, 1, all_boxes_idx.unsqueeze(-1).expand(-1, -1, 4)
+        )
+
+        for scores_i, labels_i, boxes_i, image_size in zip(
+            all_scores, all_labels, boxes_exp, image_sizes
+        ):
+
+            if self.score_threshold > 0:
+                keep_mask = scores_i > self.score_threshold
+                scores_i = scores_i[keep_mask]
+                labels_i = labels_i[keep_mask]
+                boxes_i = boxes_i[keep_mask]
+
+
+            topk = min(self.nms_pre_topk, scores_i.shape[0])
+            if topk < scores_i.shape[0]:
+                pre_idx = scores_i.topk(topk).indices
+                scores_i = scores_i[pre_idx]
+                labels_i = labels_i[pre_idx]
+                boxes_i = boxes_i[pre_idx]
+
+
+            keep = batched_nms(boxes_i, scores_i, labels_i, self.nms_iou_threshold)
+            keep = keep[: self.nms_max_per_image]
+
+            result = Instances(image_size)
+            result.pred_boxes = Boxes(boxes_i[keep])
+            result.pred_boxes.scale(scale_x=image_size[1], scale_y=image_size[0])
+            result.scores = scores_i[keep]
+            result.pred_classes = labels_i[keep]
+            results.append(result)
+
+        return results
+
+
 class _FrozenBN(FrozenBatchNorm2d):
-    """FrozenBatchNorm2d that ignores device/dtype kwargs passed by timm."""
 
     def __init__(self, num_features, **kwargs):
         kwargs.pop("device", None)
@@ -53,24 +126,24 @@ class _FrozenBN(FrozenBatchNorm2d):
         super().__init__(num_features)
 
 
-# ---------------------------------------------------------------------------
-# Architecture
-# ---------------------------------------------------------------------------
-#
-# Backbone  resnet50.a1_in1k  (out_indices 2,3,4)
-#   p2 :  512 ch  stride  8
-#   p3 : 1024 ch  stride 16
-#   p4 : 2048 ch  stride 32
-#
-# Neck  ChannelMapper  (3 → 4 levels, all projected to 256 ch)
-#   n2 : 256 ch  stride  8   ← from p2
-#   n3 : 256 ch  stride 16   ← from p3
-#   n4 : 256 ch  stride 32   ← from p4
-#   n5 : 256 ch  stride 64   ← extra level (stride-2 conv on p4)
-#
-# Transformer  embed_dim=256, 4 feature levels, 6-layer encoder, 6-layer decoder
-#   Queries : 900
-# ---------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 _EMBED_DIM = 256
 _NUM_HEADS = 8
@@ -80,7 +153,11 @@ _NUM_DEC_LAYERS = 6
 _NUM_LEVELS = 4
 _NUM_QUERIES = 900
 
-model = L(AlignDETR)(
+model = L(_AlignDETRWithNMS)(
+    nms_iou_threshold=0.5,
+    nms_max_per_image=100,
+    nms_pre_topk=1000,
+    score_threshold=0.0,
     backbone=L(TimmBackbone)(
         model_name="resnet50.a1_in1k",
         features_only=True,
@@ -260,7 +337,7 @@ train = dict(
     output_dir="src/logs/resnet50.a1_in1k/0",
     init_checkpoint="",
     max_iter=10000,
-    amp=dict(enabled=False),
+    amp=dict(enabled=True),
     ddp=dict(
         broadcast_buffers=False,
         find_unused_parameters=False,
@@ -284,10 +361,10 @@ train = dict(
         ),
     ),
     model_ema=dict(
-        enabled=False,
-        decay=0.999,
+        enabled=True,
+        decay=0.9998,
         device="",
-        use_ema_weights_for_eval_only=False,
+        use_ema_weights_for_eval_only=True,
     ),
     device="cuda",
 )

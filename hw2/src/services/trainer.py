@@ -324,13 +324,13 @@ class _VisualizationHook(hooks.HookBase):
             ap = float(pv.mean()) if pv.size else 0.0
             precisions[name] = pv
             recalls[name] = rv
-            # F1 at each recall threshold:
-            # rv here is the actual recall threshold (the x-axis sampling point),
-            # which equals the true recall by definition in the COCO interpolated
-            # PR curve — each index r means "max precision at recall >= r/100",
-            # so the recall AT that point IS r/100 (= rv).
-            # However rv[0] = 0 so F1[0] = 0 always.  We also expose the
-            # per-class best-F1 scalar via ap_scores so callers can surface it.
+
+
+
+
+
+
+
             f1_curve = 2 * pv * rv / (pv + rv + 1e-8)
             f1_scores[name] = f1_curve
             ap_scores[name] = ap
@@ -412,7 +412,7 @@ class _VisualizationHook(hooks.HookBase):
                     iou = _iou_xyxy(gt_box, pb)
                     if iou > best_iou:
                         best_iou = iou
-                        best_cls = p["category_id"]  # pred_classes are 0-indexed; GT cat_id is 1-indexed so GT uses -1
+                        best_cls = p["category_id"] - 1
                 if best_iou >= 0.5 and 0 <= gt_cls < n_cls and 0 <= best_cls < n_cls:
                     cm[gt_cls, best_cls] += 1
 
@@ -662,7 +662,9 @@ class DetrexTrainer(BaseTrainer):
 
         iters_per_epoch = None
         try:
-            total_images = len(instantiate(cfg.dataloader.train).dataset)
+            from detectron2.data import DatasetCatalog
+            dataset_name = cfg.dataloader.train.dataset.names
+            total_images = len(DatasetCatalog.get(dataset_name))
             bs = cfg.dataloader.train.total_batch_size
             iters_per_epoch = max(1, total_images // bs)
         except Exception:
@@ -746,7 +748,7 @@ class DetrexTrainer(BaseTrainer):
     
     def _load_custom_checkpoint(self, path: str) -> int:
         try:
-            ckpt = torch.load(path, map_location="cpu", weights_only=False)  # noqa: S614 — trusted local checkpoint
+            ckpt = torch.load(path, map_location="cpu", weights_only=False)
             model = self._trainer.model
             unwrapped = model.module if hasattr(model, "module") else model
 

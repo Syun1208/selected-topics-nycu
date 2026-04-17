@@ -1,17 +1,3 @@
-"""Main entry-point for dataset cleaning, augmentation, deblurring, and denoising.
-
-Usage:
-    python -m src.data.processors.data_cleaner [OPTIONS]
-    # or via shell wrapper:
-    bash src/data/processors/data_cleaner.sh [OPTIONS]
-
-Sub-modules:
-    augmentations  — albumentations pipelines + bbox helpers
-    deblur         — NAFNet-based deblurring  (shared load_nafnet)
-    denoise        — NAFNet-based denoising   (reuses load_nafnet from deblur)
-    coco_utils     — COCO / CleanVision I/O
-    workers        — multiprocessing worker functions
-"""
 
 import argparse
 import json
@@ -160,9 +146,9 @@ def run(args) -> None:
             candidates = class_images[cid]
             if not candidates:
                 continue
-            # Fix: tính dựa trên avg instances/image để không undergenerate.
-            # Công thức cũ: (aug_target - current) // len(candidates) bỏ qua
-            # việc mỗi ảnh trung bình có nhiều hơn 1 instance của class này.
+
+
+
             avg_instances_per_image = current / len(candidates)
             needed_new_images = (aug_target - current) / max(1.0, avg_instances_per_image)
             aug_per_image = max(1, math.ceil(needed_new_images / len(candidates)))

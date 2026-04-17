@@ -1,0 +1,25 @@
+# AP:
+model:
+  name: resnet101
+  architecture: AlignDETR
+  config: configs/train/aligndetr/resnet101/model.py
+  num_classes: 10
+  score_threshold: 0.0
+  nms_iou_threshold: 0.5
+  nms_max_per_image: 300
+
+checkpoint: checkpoints/aligndetr/resnet101/0/best_model.pth
+
+dataset:
+  test_images_dir: data/test
+  class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+
+post_process:
+  nms_type: soft
+  nms_iou_threshold: 0.5  
+  soft_sigma: 0.5           
+  min_box_size: 4           
+  max_det: 300
+
+output_file: submissions/aligndetr/resnet101/0/pred.json

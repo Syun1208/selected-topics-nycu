@@ -43,13 +43,12 @@ from projects.align_detr.modeling import (
 
 NUM_CLASSES = 10
 
-# ---------------------------------------------------------------------------
-# Backbone helpers
-# ---------------------------------------------------------------------------
+
+
+
 
 
 class _FrozenBN(FrozenBatchNorm2d):
-    """FrozenBatchNorm2d that ignores device/dtype kwargs passed by timm."""
 
     def __init__(self, num_features, **kwargs):
         kwargs.pop("device", None)
@@ -58,39 +57,37 @@ class _FrozenBN(FrozenBatchNorm2d):
 
 
 class _TimmBackbone(TimmBackbone):
-    """TimmBackbone with size_divisibility=64 for seresnextaa anti-aliased ResNet.
-    32 is insufficient — blur pooling causes off-by-one (80 vs 81) in residuals."""
 
     @property
     def size_divisibility(self):
         return 64
 
 
-# ---------------------------------------------------------------------------
-# Architecture
-# ---------------------------------------------------------------------------
-#
-# Backbone  seresnextaa101d_32x8d  (out_indices 2,3,4)
-#   p2 :  512 ch  stride  8
-#   p3 : 1024 ch  stride 16
-#   p4 : 2048 ch  stride 32
-#
-# Neck  ChannelMapper  (3 → 4 levels, all projected to 256 ch)
-#   n2 : 256 ch  stride  8   ← from p2
-#   n3 : 256 ch  stride 16   ← from p3
-#   n4 : 256 ch  stride 32   ← from p4
-#   n5 : 256 ch  stride 64   ← extra level (stride-2 conv on p4)
-#
-# Transformer  embed_dim=256, 4 feature levels, 6-layer encoder, 6-layer decoder
-#   Queries : 900
-# ---------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 _EMBED_DIM = 256
 _NUM_HEADS = 8
-_FFN_DIM = 2048  # feedforward_dim = 8 × embed_dim
+_FFN_DIM = 2048
 _NUM_ENC_LAYERS = 6
 _NUM_DEC_LAYERS = 6
-_NUM_LEVELS = 4  # must match ChannelMapper num_outs
+_NUM_LEVELS = 4
 _NUM_QUERIES = 900
 
 model = L(AlignDETR)(
@@ -189,11 +186,11 @@ if model.aux_loss:
         _aux_wd.update({k + f"_{_i}": v for k, v in _base_wd.items()})
     model.criterion.weight_dict = {**model.criterion.weight_dict, **_aux_wd}
 
-# ---------------------------------------------------------------------------
-# Dataloader
-# All short_edge_length values are multiples of 32 to minimise padding.
-# max_size=1344 (32×42) avoids edge cases with anti-aliased striding.
-# ---------------------------------------------------------------------------
+
+
+
+
+
 
 dataloader = OmegaConf.create()
 
@@ -251,9 +248,9 @@ dataloader.evaluator = L(COCOEvaluator)(
     output_dir="src/logs/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0",
 )
 
-# ---------------------------------------------------------------------------
-# Optimizer  –  backbone gets 0.1× LR (standard for pretrained backbone)
-# ---------------------------------------------------------------------------
+
+
+
 
 optimizer = L(torch.optim.AdamW)(
     params=L(get_default_optimizer_params)(

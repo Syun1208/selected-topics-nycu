@@ -594,22 +594,6 @@ def gradcam_detection(
     compare_layers: bool = True,
     layer_comparison_save_path: Optional[Union[str, Path]] = None,
 ) -> Tuple[Optional[plt.Figure], np.ndarray, np.ndarray]:
-    """Run GradCAM on a batch of samples, with optional layer1-4 comparison grid.
-
-    Parameters
-    ----------
-    compare_layers : if True (default), also runs ``gradcam_layer_comparison``
-        across backbone layers 1-4 and saves/shows a side-by-side figure.
-    layer_comparison_save_path : save path for the layer-comparison figure.
-        When *None* and *compare_layers* is True, the path is auto-derived from
-        *save_path* by appending ``_layer_comparison`` before the extension.
-
-    Returns
-    -------
-    fig : matplotlib Figure or None
-    features : np.ndarray of shape (N, C)  — per-detection backbone feature vectors
-    labels   : np.ndarray of shape (N,)    — predicted class index per detection
-    """
     import torch
     import torch.nn.functional as F
 
@@ -800,7 +784,7 @@ def gradcam_detection(
     feats = np.stack(all_features, axis=0) if all_features else empty_feats
     labels = np.array(all_labels, dtype=np.int32) if all_labels else empty_labels
 
-    # --- layer comparison (layer1-4) -----------------------------------------
+
     if compare_layers:
         lc_path: Optional[Path] = None
         if layer_comparison_save_path is not None:
@@ -836,10 +820,6 @@ def _run_gradcam_single(
     alpha: float = 0.45,
     class_names: Optional[List[str]] = None,
 ) -> Tuple[np.ndarray, str]:
-    """Run GradCAM for one sample on one already-resolved module.
-
-    Returns the overlay image (H×W×3 uint8) and a subtitle string.
-    """
     import torch
     import torch.nn.functional as F
 
@@ -930,7 +910,7 @@ def _run_gradcam_single(
     return overlay, subtitle
 
 
-# Default layer paths to try for layer1-4 on common backbone variants
+
 _LAYER_CANDIDATES = {
     "layer1": [
         "backbone.model.layer1",
@@ -973,37 +953,11 @@ def gradcam_layer_comparison(
     max_samples: int = 4,
     show: bool = False,
 ) -> Optional[plt.Figure]:
-    """Compare GradCAM heatmaps across backbone layers 1-4 for multiple samples.
-
-    Produces a grid of (num_samples rows) × (num_layers cols) GradCAM overlays
-    so the activation patterns at different backbone depths are easy to compare.
-
-    Parameters
-    ----------
-    model       : detection model (may be wrapped in DDP)
-    batch       : list of sample dicts as returned by the dataloader
-    layer_names : dot-paths to the target layers, e.g.
-                  ["backbone.model.layer1", ..., "backbone.model.layer4"].
-                  When *None*, auto-detects layer1-4 from the backbone.
-    save_path   : if given, saves the figure as PNG
-    val_accuracy: shown in the suptitle for reference
-    class_names : list of class name strings
-    score_threshold : minimum score to draw a box / count a detection
-    colormap    : matplotlib colormap for the heatmap
-    alpha       : blend weight for the heatmap overlay [0=original, 1=heatmap]
-    run_tag     : extra string appended to the figure suptitle
-    max_samples : how many samples from *batch* to include (≤6)
-    show        : call plt.show() after building the figure
-
-    Returns
-    -------
-    fig : matplotlib Figure (or None if no overlays were produced)
-    """
     import torch
 
     raw_model = _resolve_model(model)
 
-    # --- resolve target modules -----------------------------------------------
+
     if layer_names is None:
         layer_names = []
         for key in ("layer1", "layer2", "layer3", "layer4"):
@@ -1026,19 +980,19 @@ def gradcam_layer_comparison(
     for ln in layer_names:
         target_modules.append(_find_target_module(raw_model, ln))
 
-    # short display names: "backbone.model.layer3" → "layer3"
+
     short_names = [ln.split(".")[-1] for ln in layer_names]
 
     samples = batch[: min(max_samples, 6)]
     was_training = model.training
     model.eval()
 
-    # grid: rows = samples, cols = layers
+
     n_rows = len(samples)
     n_cols = len(layer_names)
 
     try:
-        # Collect overlays[sample_idx][layer_idx]
+
         all_overlays: List[List[np.ndarray]] = []
         all_subtitles: List[str] = []
 
@@ -1081,10 +1035,10 @@ def gradcam_layer_comparison(
             ax = axes[ri][ci]
             ax.imshow(all_overlays[ri][ci])
             ax.axis("off")
-            # column header (layer name) on first row only
+
             if ri == 0:
                 ax.set_title(short_names[ci], fontsize=11, fontweight="bold", pad=6)
-        # row label (sample name) on leftmost axis
+
         axes[ri][0].set_ylabel(
             all_subtitles[ri], fontsize=7, labelpad=4, rotation=90, va="center"
         )
@@ -1111,7 +1065,6 @@ def gradcam_layer_comparison(
 
 
 def _next_index(directory: Path) -> int:
-    """Return next 0-based integer index by counting existing PNG files in *directory*."""
     directory.mkdir(parents=True, exist_ok=True)
     return len(list(directory.glob("*.png")))
 
@@ -1136,15 +1089,6 @@ def plot_tsne_from_features(
     save_path: Optional[Union[str, Path]] = None,
     show: bool = False,
 ) -> plt.Figure:
-    """Run t-SNE on raw feature arrays and return the figure.
-
-    Parameters
-    ----------
-    features : np.ndarray  shape (N, C)
-    labels   : np.ndarray  shape (N,)  — integer class indices
-    title    : suptitle for the plot
-    save_path : if given, saves PNG (and PDF alongside it)
-    """
     from sklearn.manifold import TSNE
 
     features = np.asarray(features, dtype=np.float32)
@@ -1317,11 +1261,6 @@ def plot_tsne(
     random_state: int = 42,
     show: bool = False,
 ) -> List[plt.Figure]:
-    """Run t-SNE on backbone features saved as ``.npz`` files in *features_dir*.
-
-    Each ``.npz`` must contain ``features`` (N, C) and ``labels`` (N,).
-    Saves PNGs under ``<features_dir>/../tsne/``.
-    """
     features_dir = Path(features_dir)
     if not features_dir.is_dir():
         raise ValueError(f"features_dir does not exist: {features_dir}")
@@ -1400,37 +1339,6 @@ def visualize_from_yaml(
     seed: Optional[int] = None,
     show: bool = False,
 ) -> Tuple[Optional[plt.Figure], Optional[plt.Figure]]:
-    """Load a model from a test YAML config, run GradCAM on random test images,
-    and produce a t-SNE of the extracted per-detection features.
-
-    The YAML must have the structure::
-
-        model:
-          config: configs/train/<arch>/<backbone>/model.py
-        checkpoint: checkpoints/<arch>/<backbone>/<run>/best_model.pth
-        dataset:
-          test_images_dir: data/test          # used when test_images_dir is None
-          class_names: [...]
-
-    Outputs are saved under ``charts/<arch>/<backbone>/<run>/gradcam/<index>.png``
-    and ``charts/<arch>/<backbone>/<run>/tsne/<index>.png`` where *index*
-    auto-increments with each call.
-
-    Parameters
-    ----------
-    yaml_path        : path to the test YAML file
-    test_images_dir  : override the directory in the YAML
-    n_images         : how many images to sample (displayed in a 2×3 grid)
-    target_layer     : dot-path of the backbone layer for GradCAM
-    score_threshold  : minimum detection score to consider
-    seed             : random seed for image sampling
-    show             : call plt.show() after each figure
-
-    Returns
-    -------
-    gradcam_fig : matplotlib Figure  (2×3 GradCAM overlays)
-    tsne_fig    : matplotlib Figure  (t-SNE of detection features)
-    """
     import random as _random
     import torch
     import yaml as _yaml
@@ -1438,14 +1346,14 @@ def visualize_from_yaml(
     yaml_path = Path(yaml_path)
     cfg_yaml = _yaml.safe_load(yaml_path.open())
 
-    # ── resolve paths ────────────────────────────────────────────────────────
+
     model_config_path = cfg_yaml["model"]["config"]
     checkpoint_path = cfg_yaml["checkpoint"]
     class_names = cfg_yaml["dataset"]["class_names"]
     img_dir = Path(test_images_dir or cfg_yaml["dataset"]["test_images_dir"])
 
-    # Derive chart base from YAML path: configs/test/<arch>/<backbone>/<run>.yaml
-    # → charts/<arch>/<backbone>/<run>/
+
+
     parts = yaml_path.parts
     try:
         test_idx = list(parts).index("test")
@@ -1463,7 +1371,7 @@ def visualize_from_yaml(
     gradcam_save = gradcam_dir / f"{idx}.png"
     tsne_save = tsne_dir / f"{idx}.png"
 
-    # ── load model ───────────────────────────────────────────────────────────
+
     from detectron2.config import LazyConfig, instantiate
     from detectron2.checkpoint import DetectionCheckpointer
 
@@ -1474,7 +1382,7 @@ def visualize_from_yaml(
     model.eval()
     DetectionCheckpointer(model).load(checkpoint_path)
 
-    # ── sample images ────────────────────────────────────────────────────────
+
     exts = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".webp"}
     all_imgs = [f for f in sorted(img_dir.iterdir()) if f.suffix.lower() in exts]
     if not all_imgs:
@@ -1488,12 +1396,12 @@ def visualize_from_yaml(
         try:
             import cv2
 
-            img = cv2.imread(str(img_path))  # BGR float32
+            img = cv2.imread(str(img_path))
             if img is None:
                 raise OSError(f"cv2 could not read {img_path}")
         except ImportError:
             img_pil = Image.open(img_path).convert("RGB")
-            img = np.array(img_pil)[:, :, ::-1].copy()  # RGB→BGR
+            img = np.array(img_pil)[:, :, ::-1].copy()
 
         H, W = img.shape[:2]
         img_tensor = torch.as_tensor(img.transpose(2, 0, 1).astype("float32"))
@@ -1507,7 +1415,7 @@ def visualize_from_yaml(
             }
         )
 
-    # ── GradCAM ──────────────────────────────────────────────────────────────
+
     run_tag = f"{arch}  /  {backbone}  /  run {run}"
     gradcam_fig, features, labels = gradcam_detection(
         model=model,
@@ -1520,7 +1428,7 @@ def visualize_from_yaml(
         show=show,
     )
 
-    # ── t-SNE ────────────────────────────────────────────────────────────────
+
     tsne_fig: Optional[plt.Figure] = None
     if features.ndim == 2 and len(features) >= 2:
         title = (

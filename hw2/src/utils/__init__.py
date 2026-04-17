@@ -22,7 +22,7 @@ __all__ = [
     "setup_logger",
     "find_latest_checkpoint",
     "load_model_weights",
-    # visualize
+
     "gradcam_detection",
     "gradcam_layer_comparison",
     "metrics_from_csv",

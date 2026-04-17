@@ -45,7 +45,6 @@ NUM_CLASSES = 10
 
 
 class _FrozenBN(FrozenBatchNorm2d):
-    """FrozenBatchNorm2d that ignores device/dtype kwargs passed by timm."""
 
     def __init__(self, num_features, **kwargs):
         kwargs.pop("device", None)
@@ -53,24 +52,24 @@ class _FrozenBN(FrozenBatchNorm2d):
         super().__init__(num_features)
 
 
-# ---------------------------------------------------------------------------
-# Architecture
-# ---------------------------------------------------------------------------
-#
-# Backbone  resnet50.a1_in1k  (out_indices 2,3,4)
-#   p2 :  512 ch  stride  8
-#   p3 : 1024 ch  stride 16
-#   p4 : 2048 ch  stride 32
-#
-# Neck  ChannelMapper  (3 → 4 levels, all projected to 256 ch)
-#   n2 : 256 ch  stride  8   ← from p2
-#   n3 : 256 ch  stride 16   ← from p3
-#   n4 : 256 ch  stride 32   ← from p4
-#   n5 : 256 ch  stride 64   ← extra level (stride-2 conv on p4)
-#
-# Transformer  embed_dim=256, 4 feature levels, 6-layer encoder, 6-layer decoder
-#   Queries : 900
-# ---------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 _EMBED_DIM = 256
 _NUM_HEADS = 8
@@ -170,7 +169,7 @@ model = L(DINO)(
     device="cuda",
 )
 
-# Expand aux loss weight dict across decoder layers + encoder
+
 _base_wd = copy.deepcopy(model.criterion.weight_dict)
 if model.aux_loss:
     _aux_wd = {}
@@ -221,7 +220,7 @@ dataloader.test = L(build_detection_test_loader)(
     dataset=L(get_detection_dataset_dicts)(names="valid", filter_empty=False),
     mapper=L(DetrDatasetMapper)(
         augmentation=[
-            # TTA: test ở resolution lớn hơn training (800→1000)
+
             L(T.ResizeShortestEdge)(short_edge_length=1000, max_size=1333),
         ],
         augmentation_with_crop=None,

@@ -4,6 +4,7 @@ model:
   architecture: AlignDETR
   config: configs/train/aligndetr/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/model.py
   num_classes: 10
+  score_threshold: 0.8
 
 checkpoint: checkpoints/aligndetr/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0/best_model.pth
 

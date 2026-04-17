@@ -1,30 +1,3 @@
-"""
-SafeDNN Clean: Find incorrect boxes in object detection datasets
-Copyright (C) 2023  SafeDNN group
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-
-Requirements:
-    * numpy>=1.20.0 (interface)
-    * sklearn>1.2.2 (clustering)
-    * cleanlab>=2.2.0 (label quality scores)
-    * tqdm>=4.40.0 (progress bars)
-
-Usage:
-    python3 safednn-clean.py --help
-"""
 
 import argparse
 import collections
@@ -37,9 +10,6 @@ import numpy as np
 
 
 def bbox_iou(a, b):
-    """
-    Intersection over union of bboxes of two annotations
-    """
     xa, ya, wa, ha = a["bbox"]
     xb, yb, wb, hb = b["bbox"]
 
@@ -60,10 +30,7 @@ def bbox_iou(a, b):
 
 
 def cluster(annotations, iou):
-    """
-    Bounding box clustering with IoU threshold
-    """
-    # import here to emphasize insignificance of specific implementation
+
     from sklearn.cluster import AgglomerativeClustering
 
     annotations = list(annotations)
@@ -96,9 +63,6 @@ def cluster(annotations, iou):
 
 
 def reduce(annotations, iou):
-    """
-    Produce classification output from detection output
-    """
     labels = []
     pred_probs = []
     clusters = []
@@ -140,9 +104,6 @@ def reduce(annotations, iou):
 
 
 def classify(clusters, scores, threshold, top_n):
-    """
-    Classify kinds of labeling errors
-    """
     clust_counts = collections.Counter()
     annot_counts = collections.Counter()
     issues_list = []
@@ -151,8 +112,8 @@ def classify(clusters, scores, threshold, top_n):
     scores_clusters.sort(key=lambda x: x[0])
 
     for score, clust in scores_clusters:
-        # Please note that cluster score is the annotation quality score
-        # but annotation["score"] is the detection softmax score.
+
+
 
         if score > threshold:
             continue
@@ -180,7 +141,7 @@ def classify(clusters, scores, threshold, top_n):
                     "annotations": annots,
                     "predictions": preds
                 })
-            else:  # different labels present
+            else:
                 issue = "label"
                 mark = annots
                 annot_counts.update({issue: len(annots)})
@@ -262,7 +223,7 @@ if __name__ == "__main__":
     clust_counts, annot_counts, issues_list = classify(clusters, scores,
         args.threshold, args.topn)
 
-    # include "missing" annotations with negative ids
+
     pred_ids = itertools.count(-1, -1)
     data["annotations"] += [{**x, "id": next(pred_ids),
         "category_id": category_ids[x["category"]]}

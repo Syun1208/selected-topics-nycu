@@ -1,0 +1,37 @@
+model:
+  name: resnet50.a1_in1k
+  architecture: RTDETR
+  config: configs/train/rtdetr/resnet50.a1_in1k/model.py
+  pretrained_backbone: "resnet50.a1_in1k"
+  num_classes: 10
+
+dataset:
+  train_json: data/clean_train.json
+  train_images_dir: data/clean_train
+  valid_json: data/valid.json
+  valid_images_dir: data/valid
+  test_images_dir: data/test
+  register_train: train
+  register_valid: valid
+  class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+training:
+  max_iter: 75000
+
+  batch_size: 2
+  learning_rate: 1.0e-4
+  weight_decay: 1.0e-4
+
+  num_workers: 2
+  amp: true
+  eval_period: 5000
+  log_period: 20
+  checkpoint_period: 5000
+  resume: false
+  init_checkpoint: ""
+
+  clip_grad:
+    enabled: true
+    max_norm: 0.1
+
+output_dir: logs/rtdetr/resnet50.a1_in1k/0

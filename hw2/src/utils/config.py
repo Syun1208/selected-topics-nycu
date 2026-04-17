@@ -81,8 +81,6 @@ def apply_yaml_overrides(lazy_cfg: Any, yaml_cfg: DictConfig) -> Any:
         if backbone_name:
             lazy_cfg.model.backbone.model_name = backbone_name
             lazy_cfg.model.backbone.pretrained = True
-        else:
-            lazy_cfg.model.backbone.pretrained = False
     except Exception:
         pass
     

@@ -213,4 +213,14 @@ __marimo__/
 **/runs
 **/hw*/notebooks/outputs/*.npy
 **/hw*/notebooks/outputs/*.csv
-**/charts/
+**/hw*/notebooks/outputs/*.pkl
+**/hw1//charts/
+**/hw*/configs/detectron2
+**/hw*/configs/detrex/
+**/hw*/configs/RT-DETR/
+**/hw*/rtdetr_src
+**/hw*/src/logs/*
+**/hw*/src/data/processors/configs-nafnet/*
+**/hw*/submissions
+**/hw*/src/data/processors/pretrained-nafnet/*
+**/*NAFNet

@@ -6,8 +6,8 @@ export CUDA_DEVICE_ORDER=PCI_BUS_ID
 export TORCH_NCCL_BLOCKING_WAIT=1
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
-CONFIG=configs/train/rtdetr/resnet101/0.yaml
-GPU_IDS="4,5,6,7"                 
+CONFIG=configs/train/aligndetr/resnet50.a1_in1k/0.yaml
+GPU_IDS="6,7"                 
 NUM_GPUS=""         
 NUM_MACHINES=1
 MACHINE_RANK=0

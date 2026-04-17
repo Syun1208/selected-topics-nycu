@@ -3,6 +3,7 @@ model:
   architecture: RTDETR
   config: configs/train/rtdetr/resnet101/model.py
   num_classes: 10
+  score_threshold: 0.8
 
 checkpoint: "checkpoints/rtdetr/resnet101/0/best_model.pth"
 

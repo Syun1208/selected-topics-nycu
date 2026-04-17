@@ -4,11 +4,21 @@ model:
   architecture: DINO
   config: configs/train/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/model.py
   num_classes: 10
+  score_threshold: 0.05
+  nms_iou_threshold: 0.5      
+  nms_max_per_image: 300      
 
-checkpoint: "checkpoints/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0/best_model.pth"
+checkpoint: "checkpoints/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/1/best_model.pth"
 
 dataset:
   test_images_dir: data/test
   class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-output_file: submissions/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0/pred.json
+post_process:
+  nms_type: soft            
+  nms_iou_threshold: 0.5    
+  soft_sigma: 0.5           
+  min_box_size: 4           
+  max_det: 300              
+
+output_file: submissions/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/2/pred.json

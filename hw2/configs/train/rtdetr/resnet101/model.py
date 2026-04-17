@@ -1,9 +1,3 @@
-"""
-RT-DETRv2 with PResNet-101 backbone (native RT-DETR backbone, pretrained from Paddle).
-Architecture matches rtdetrv2_r101vd_6x_coco.yml:
-  hidden_dim=384, dim_feedforward=2048, feat_channels=[384,384,384]
-"""
-
 import os
 import sys
 import types as _types
@@ -20,8 +14,6 @@ for _p in [_DETREX_ROOT, _PROJECT_ROOT]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-# Pre-register rtdetr_src as an empty package to skip its __init__.py
-# (which imports data/ → faster_coco_eval, not installed).
 if "rtdetr_src" not in sys.modules:
     _rtdetr_src_path = os.path.join(_PROJECT_ROOT, "rtdetr_src")
     _stub = _types.ModuleType("rtdetr_src")
@@ -63,11 +55,6 @@ NUM_CLASSES = 10
 
 
 class RTDETRDetectron2(nn.Module):
-    """
-    RT-DETRv2 wrapper compatible with Detectron2 trainer/tester.
-    Uses native PResNet-101 backbone (pretrained weights from Paddle).
-    Architecture: hidden_dim=384, dim_feedforward=2048 (R101 spec).
-    """
 
     def __init__(
         self,
@@ -237,10 +224,6 @@ class RTDETRDetectron2(nn.Module):
             outputs.append({"instances": inst})
         return outputs
 
-
-# ---------------------------------------------------------------------------
-# LazyConfig objects
-# ---------------------------------------------------------------------------
 
 model = L(RTDETRDetectron2)(
     num_classes=NUM_CLASSES,

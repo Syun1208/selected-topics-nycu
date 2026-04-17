@@ -1,10 +1,10 @@
 set -euo pipefail
 
-CONFIG="configs/test/dino/seresnextaa101d_32x8d.sw_in12k_ft_in1k_288/0.yaml"
+CONFIG=configs/test/aligndetr/resnet50.a1_in1k/0.yaml
 N_IMAGES=6
 TARGET_LAYER="backbone.model.layer4"
 SCORE_THRESHOLD=0.3
-GPU_IDS="2"
+GPU_IDS="1"
 SEED="42"
 SHOW=""
 

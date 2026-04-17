@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 import argparse
 import glob
 import json
@@ -96,11 +96,11 @@ def main():
 
     yaml_cfg = load_yaml_config(args.config)
 
-    # GPU IDs: CLI override > YAML
+
     gpu_ids = args.gpu_ids or str(yaml_cfg.get("testing", {}).get("gpu_ids", "0"))
     os.environ["CUDA_VISIBLE_DEVICES"] = gpu_ids
 
-    # output_file — save predictions directly to this path
+
     output_file = str(yaml_cfg.get("output_file"))
     output_dir = os.path.dirname(os.path.abspath(output_file))
     os.makedirs(output_dir, exist_ok=True)
@@ -110,22 +110,34 @@ def main():
     logger.info("GPU IDs     : %s", gpu_ids)
     logger.info("Output file : %s", output_file)
 
-    # Register test images
+
     ds = yaml_cfg.dataset
     test_images_dir = str(ds.get("test_images_dir", "data/test"))
     test_dataset_name = _register_test_split(test_images_dir)
 
-    # Load model config (reuses the train model.py)
+
     model_config_path = os.path.join(_PROJECT_ROOT, str(yaml_cfg.model.config))
     lazy_cfg = LazyConfig.load(model_config_path)
     lazy_cfg = apply_yaml_overrides(lazy_cfg, yaml_cfg)
 
-    # Override test dataloader to use the registered test dataset (not "valid")
+
     lazy_cfg.dataloader.test.dataset.names = test_dataset_name
     lazy_cfg.dataloader.test.num_workers = 0
 
-    # Checkpoint: YAML field → auto-detect from log dir → error
+
+
+    _model_yaml = yaml_cfg.get("model", {})
+    for _attr in ("nms_iou_threshold", "nms_max_per_image", "nms_pre_topk"):
+        if _attr in _model_yaml:
+            try:
+                setattr(lazy_cfg.model, _attr, float(_model_yaml[_attr])
+                        if "threshold" in _attr else int(_model_yaml[_attr]))
+            except Exception:
+                pass
+
+
     checkpoint = str(yaml_cfg.get("checkpoint", "")).strip()
+    score_threshold = float(yaml_cfg.model.get("score_threshold", 0.05))
     if not checkpoint or not os.path.isfile(checkpoint):
         logger.error(
             "Checkpoint not found at '%s'. Attempting to auto-detect from log dir...", checkpoint
@@ -151,8 +163,17 @@ def main():
     tester = DetrexTester()
     tester.setup(lazy_cfg)
 
-    # Run inference and save to output_file
-    predictions = tester._run_inference()
+
+    post_process = dict(yaml_cfg.get("post_process", {}))
+    if post_process:
+        logger.info("Post-process config: %s", post_process)
+
+
+    logger.info("Running inference with score_threshold=%.2f ...", score_threshold)
+    predictions = tester._run_inference(
+        score_threshold=score_threshold,
+        post_process=post_process,
+    )
     with open(output_file, "w") as f:
         json.dump(predictions, f)
     logger.info("Saved %d predictions → %s", len(predictions), output_file)
