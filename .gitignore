@@ -208,6 +208,8 @@ __marimo__/
 **/hw*/data/*
 **/*.pdf
 **/*.tex
+**/*.pth
+**/*.json
 **/hw*/logs
 **/hw*/checkpoints*
 **/runs
@@ -216,6 +218,7 @@ __marimo__/
 **/hw*/notebooks/outputs/*.pkl
 **/hw1//charts/
 **/hw*/configs/detectron2
+**/hw*/configs/mmdetection
 **/hw*/configs/detrex/
 **/hw*/configs/RT-DETR/
 **/hw*/rtdetr_src

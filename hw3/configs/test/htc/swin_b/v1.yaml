@@ -1,0 +1,29 @@
+# HTC + Swin-B | Test/Inference Config v1
+
+experiment:
+  name: v1
+
+model:
+  name: htc
+  backbone: swin_b
+  num_classes: 4
+
+data:
+  test_dir: data/test_release
+  mapping_json: data/test_image_name_to_ids.json
+  img_size: 1024
+  num_workers: 4
+
+inference:
+  device: cuda
+  score_thr: 0.05
+  nms_iou_thr: 0.5
+  tta:
+    enabled: false
+    flip: true
+
+paths:
+  base_dir: .
+  checkpoint_dir: checkpoints/htc/swin_b/v1
+  checkpoint_path: checkpoints/htc/swin_b/v1/best.pth
+  chart_dir: charts/htc/swin_b/v1

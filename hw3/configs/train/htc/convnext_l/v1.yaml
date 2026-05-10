@@ -1,0 +1,47 @@
+experiment:
+  name: v1
+
+model:
+  name: htc
+  backbone: convnext_l
+  num_classes: 4
+  pretrain_weights:
+    path: null
+
+data:
+  train_dir: data/train
+  val_ratio: 0.2
+  num_workers: 4
+  use_oversampling: true
+
+  augmentation:
+    img_size: 1024
+    min_scale: 0.5
+    max_scale: 2.0
+    copy_paste:
+      enabled: true
+      prob: 0.5
+      max_paste: 4
+      rare_classes: [4]
+      rare_boost: 3.0
+
+training:
+  gpu_ids: "7"                            # CUDA_VISIBLE_DEVICES (e.g. "0", "1", "0,1")
+  device: cuda                            # relative to gpu_ids
+  max_epochs: 36
+  batch_size: 1                           # ConvNeXt-L is memory heavy; use grad accum
+  lr: 0.0001
+  weight_decay: 0.05
+  warmup_epochs: 1
+  lr_milestones: [24, 32]
+  grad_clip: 1.0
+  fp16: true
+
+inference:
+  score_thr: 0.05
+  nms_iou_thr: 0.5
+
+paths:
+  base_dir: .
+  checkpoint_dir: checkpoints/htc/convnext_l/v1
+  chart_dir: charts/htc/convnext_l/v1

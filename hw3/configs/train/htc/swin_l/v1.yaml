@@ -1,0 +1,50 @@
+# HTC (Hybrid Task Cascade) + Swin-L (ImageNet-22K) | Training Config v1
+# Total params: ~284M  (larger backbone — use fp16 + with_cp)
+
+experiment:
+  name: v1
+
+model:
+  name: htc
+  backbone: swin_l
+  num_classes: 4
+  pretrain_weights:
+    path: null
+
+data:
+  train_dir: data/train
+  val_ratio: 0.2
+  num_workers: 4
+  use_oversampling: true
+
+  augmentation:
+    img_size: 800
+    min_scale: 0.8
+    max_scale: 1.5
+    copy_paste:
+      enabled: true
+      prob: 0.5
+      max_paste: 4
+      rare_classes: [3]
+      rare_boost: 3.0
+
+training:
+  gpu_ids: "7"                            
+  device: cuda                            
+  max_epochs: 36
+  batch_size: 1
+  lr: 0.00005
+  weight_decay: 0.05
+  warmup_epochs: 1
+  lr_milestones: [24, 32]
+  grad_clip: 1.0
+  fp16: true
+
+inference:
+  score_thr: 0.05
+  nms_iou_thr: 0.5
+
+paths:
+  base_dir: .
+  checkpoint_dir: checkpoints/htc/swin_l/v1
+  chart_dir: charts/htc/swin_l/v1
