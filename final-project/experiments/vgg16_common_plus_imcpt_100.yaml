@@ -1,0 +1,79 @@
+MODEL_NAME: vgg16_commonplus
+DATASET_NAME: imcpt_100
+
+DATASET_FULL_NAME: IMC_PT_SparseGM
+
+MODULE: models.COMMONPLUS.model
+
+BACKBONE: VGG16_bn_final
+
+BATCH_SIZE: 4
+DATALOADER_NUM: 2
+FP16: False
+
+RANDOM_SEED: 33
+
+
+
+# available GPU ids
+GPUS:
+  - 0
+
+# Problem configuration
+PROBLEM:
+  TYPE: 2GM
+  RESCALE: # rescaled image size
+    - 256
+    - 256
+  FILTER: 'unfiltered'
+
+# Graph construction settings
+GRAPH:
+  SRC_GRAPH_CONSTRUCT: tri
+  TGT_GRAPH_CONSTRUCT: tri
+  SYM_ADJACENCY: True
+
+# IMC_PT_SparseGM dataset configuration
+IMC_PT_SparseGM:
+  ROOT_DIR_NPZ: data/IMC-PT-SparseGM/annotations_100
+  MAX_KPT_NUM: 100
+
+# Training settings
+TRAIN:
+  # start, end epochs
+  START_EPOCH: 0
+  NUM_EPOCHS: 25
+
+  LOSS_FUNC: custom
+
+
+  OPTIMIZER: Adam
+
+  # learning rate
+  LR: 3.e-4 # 2.5e-3
+  SEPARATE_BACKBONE_LR: True
+  BACKBONE_LR: 1.e-5
+  MOMENTUM: 0.9
+  LR_DECAY: 0.5
+  LR_STEP:  # (in epochs)
+    - 4
+    - 8
+    - 16
+
+  EPOCH_ITERS: 400  # iterations per epoch
+
+  CLASS: none
+
+# Evaluation settings
+EVAL:
+  EPOCH: 10  # epoch to be tested
+  SAMPLES: 1000  # number of tested pairs for each class
+
+# model parameters
+COMMONPLUS:
+  FEATURE_CHANNEL: 512 # following BBGM
+  ALPHA: 0.4
+  DISTILL: True
+  WARMUP_STEP: 2000 # as the training set of Willow is small, we use a large warmup step
+  MOMENTUM: 0.995
+#  QUEUE_SIZE: 600 # the negative samples
