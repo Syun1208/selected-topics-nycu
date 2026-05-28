@@ -1,0 +1,33 @@
+experiment:
+  name: v1
+
+model:
+  name: promptir
+  backbone: promptir_base
+  inp_channels: 3
+  out_channels: 3
+  dim: 48
+  num_blocks: [4, 6, 6, 8]
+  num_refinement_blocks: 4
+  heads: [1, 2, 4, 8]
+  ffn_expansion_factor: 2.66
+  bias: false
+  layer_norm_type: WithBias
+  decoder: true
+
+data:
+  test_path: data/hw4_realse_dataset/test
+  num_workers: 0
+
+inference:
+  device: cuda
+  gpu_ids: "0"
+  use_ema: false
+  self_ensemble: true
+  tile: false
+  tile_size: 128
+  tile_overlap: 32
+
+paths:
+  base_dir: .
+  checkpoint_path: checkpoints/promptir/promptir_base/v1/best_rainsnow_edge.ckpt

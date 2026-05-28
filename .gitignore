@@ -54,6 +54,7 @@ cover/
 # Translations
 *.mo
 *.pot
+*.tar
 
 # Django stuff:
 *.log
@@ -210,8 +211,20 @@ __marimo__/
 **/*.tex
 **/*.pth
 **/*.json
+**/*.bin
+**/*.safetensors
+**/*.ckpt
+**/*.npz
+**/*.npy
+**/kagglehub/
+**/wandb/
+**/wandb_v2/
+**/wandb_plots/
 **/hw*/logs
 **/hw*/checkpoints*
+**/hw*/train_ckpt*
+**/hw*/output/
+**/hw*/charts/
 **/runs
 **/hw*/notebooks/outputs/*.npy
 **/hw*/notebooks/outputs/*.csv
@@ -227,3 +240,9 @@ __marimo__/
 **/hw*/submissions
 **/hw*/src/data/processors/pretrained-nafnet/*
 **/*NAFNet
+**/*final-project/data
+**/*final-project/logs
+**/*final-project/.dist_output
+**/*final-project/extra
+**/*train_ckpt
+**/*.csv

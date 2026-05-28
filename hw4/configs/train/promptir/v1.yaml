@@ -1,0 +1,56 @@
+experiment:
+  name: v1
+  ckpt_filename: best_rainsnow_edge
+
+model:
+  name: promptir
+  backbone: promptir_base
+  inp_channels: 3
+  out_channels: 3
+  dim: 48
+  num_blocks: [4, 6, 6, 8]
+  num_refinement_blocks: 4
+  heads: [1, 2, 4, 8]
+  ffn_expansion_factor: 2.66
+  bias: false
+  layer_norm_type: WithBias
+  decoder: true
+
+data:
+  data_file_dir: data/hw4_realse_dataset/
+  derain_dir: data/hw4_realse_dataset/
+  desnow_dir: data/hw4_realse_dataset/
+  de_type: [derain, desnow]
+  patch_size: 128
+  num_aug: 120
+  num_workers: 4
+
+loss:
+  type: l1
+  w_pixel: 1.0
+  w_edge: 0.1
+  w_fft: 0.0
+
+training:
+  max_epochs: 150
+  batch_size: 2
+  lr: 2.0e-4
+  weight_decay: 1.0e-4
+  betas: [0.9, 0.999]
+  warmup_epochs: 15
+  eta_min: 1.0e-6
+  precision: 16-mixed
+  grad_clip: 0.0
+  num_gpus: 1
+  ema: false
+  log_every_n_steps: 50
+  log_image_every: 6000
+
+logging:
+  wandb_project: hw4
+  wandb_run_name: rainsnow_v1
+  wandb_dir: wandb
+  tensorboard_dir: logs/
+
+paths:
+  base_dir: .

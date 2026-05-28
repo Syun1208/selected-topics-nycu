@@ -1,0 +1,435 @@
+# Official pretrained models
+# ----------------------------------------------------------
+CVNET_R101:
+  local: extra/pretrained_models/cvnet/CVPR2022_CVNet_R101.pyth
+  kernel: ../input/imc2023models/cvnet/CVPR2022_CVNet_R101.pyth
+
+LOFTR_OUTDOOR_KORNIA:
+  local: extra/pretrained_models/loftr/loftr_outdoor.ckpt
+  kernel: ../input/imc2023models/loftr/loftr_outdoor.ckpt
+
+LOFTR_INDOOR_KORNIA:
+  local: extra/pretrained_models/loftr/loftr_indoor.ckpt
+  kernel: ../input/imc2023models/loftr/loftr_indoor.ckpt
+
+DISK_DEPTH:
+  local: extra/pretrained_models/disk/disk_depth.pth
+  kernel: ../input/imc2023models/disk/disk_depth.pth
+
+MTLDESC:
+  local: extra/pretrained_models
+  kernel: ../input/imc2023models
+
+MATCHFORMER_OUTDOOR_LARGE_LA:
+  local: extra/pretrained_models/matchformer/outdoor-large-LA.ckpt
+  kernel: ../input/imc2023models/matchformer/outdoor-large-LA.ckpt
+
+SE2LOFTR_BIG:
+  local: extra/pretrained_models/se2loftr/4rot-big.ckpt
+  kernel: ../input/imc2023models/se2loftr/4rot-big.ckpt
+
+SE2LOFTR_BIG_CONFIG_FILE:
+  local: extra/pretrained_models/se2loftr/loftr_ds_e2_dense_big.py
+  kernel: ../input/imc2023models/se2loftr/loftr_ds_e2_dense_big.py
+
+POSFEAT_IMC2022:
+  local: extra/pretrained_models/posfeat/keypoint_imc2022_2_1/006
+  kernel: ../input/imc2023models/posfeat/keypoint_imc2022_2_1/006
+
+ALIKED_N32:
+  local: extra/pretrained_models/aliked/aliked-n32.pth
+  kernel: ../input/imc2023models/aliked/aliked-n32.pth
+
+LANET_V1:
+  local: extra/pretrained_models/lanet/PointModel_v1.pth
+  kernel: ../input/imc2023models/lanet/PointModel_v1.pth
+
+DKM_V3_OUTDOOR:
+  local: extra/pretrained_models/dkm/DKMv3_outdoor.pth
+  kernel: ../input/imc2023models/dkm/DKMv3_outdoor.pth
+
+OPENGLUE_MTLDESC:
+  local: extra/pretrained_models/openglue/sg_mtldesc_v2
+  kernel: ../input/imc2023models/openglue/sg_mtldesc_v2
+
+ECOTR:
+  local: extra/pretrained_models/eco-tr/checkpoint.pth.tar
+  kernel: ../input/imc2023models/eco-tr/checkpoint.pth.tar
+
+QUADTREE_OUTDOOR:
+  local: extra/pretrained_models/quadtree/outdoor.ckpt
+  kernel: ../input/imc2023models/quadtree/outdoor.ckpt
+
+SFD2:
+  local: extra/pretrained_models/sfd2/20220810_ressegnetv2_wapv2_ce_sd2mfsf_uspg.pth
+  kernel: ../input/imc2023models/sfd2/20220810_ressegnetv2_wapv2_ce_sd2mfsf_uspg.pth
+
+SUPERPOINT_COCO:
+  local: extra/pretrained_models/superpoint/superpoint_coco_heat2_0/checkpoints/superPointNet_170000_checkpoint.pth.tar
+  kernel: ../input/imc2023models/superpoint/superpoint_coco_heat2_0/checkpoints/superPointNet_170000_checkpoint.pth.tar
+
+SUPERPOINT_KITTI:
+  local: extra/pretrained_models/superpoint/superpoint_kitti_heat2_0/checkpoints/superPointNet_50000_checkpoint.pth.tar
+  kernel: ../input/imc2023models/superpoint/superpoint_kitti_heat2_0/checkpoints/superPointNet_50000_checkpoint.pth.tar
+
+OPENGLUE_SUPERPOINT_COCO:
+  local: extra/pretrained_models/openglue_superpoint/coco
+  kernel: ../input/imc2023models/openglue_superpoint/coco
+
+OPENGLUE_SUPERPOINT_KITTI:
+  local: extra/pretrained_models/openglue_superpoint/kitti
+  kernel: ../input/imc2023models/openglue_superpoint/kitti
+
+APGEM_RESNET101:
+  local: extra/pretrained_models/apgem/Resnet-101-AP-GeM.pt
+  kernel: ../input/imc2023models/apgem/Resnet-101-AP-GeM.pt
+
+ALIKE_L:
+  local: extra/pretrained_models/alike/alike-l.pth
+  kernel: ../input/imc2023models/alike/alike-l.pth
+
+FEATUREBOOSTER_ALIKE_BOOST_F:
+  local: extra/pretrained_models/featurebooster/ALIKE+Boost-F.pth
+  kernel: ../input/imc2023models/featurebooster/ALIKEBoost-F.pth    # Remove "+"
+
+ADAMATCHER:
+  local: extra/pretrained_models/adamatcher/adamatcher.ckpt
+  kernel: ../input/imc2023models/adamatcher/adamatcher.ckpt
+
+ADAMATCHER_ASPAN:
+  local: extra/pretrained_models/adamatcher/adamatcher_aspan.ckpt
+  kernel: ../input/imc2023models/adamatcher/adamatcher_aspan.ckpt
+
+ADAMATCHER_QUAD:
+  local: extra/pretrained_models/adamatcher/adamatcher_quad.ckpt
+  kernel: ../input/imc2023models/adamatcher/adamatcher_quad.ckpt
+
+NCMNET_YFCC:
+  local: extra/pretrained_models/ncmnet/yfcc/model_best.pth
+  kernel: ../input/imc2023models/ncmnet/yfcc/model_best.pth
+
+MAGICLEAP_SUPERPOINT:
+  local: extra/pretrained_models/research_only/magicleap/superpoint_v1.pth
+  kernel: ../input/imc2023models/research_only/magicleap/superpoint_v1.pth
+
+MAGICLEAP_SUPERGLUE:
+  local: extra/pretrained_models/research_only/magicleap/superglue_outdoor.pth
+  kernel: ../input/imc2023models/research_only/magicleap/superglue_outdoor.pth
+  
+OPENGLUE_ALIKED_V1:
+  local: extra/pretrained_models/openglue/sg_aliked_v1
+  kernel: ../input/imc2023models/openglue/sg_aliked_v1
+
+ROMA_OUTDOOR:
+  local: extra/pretrained_models/roma/roma_outdoor.pth
+  kernel: ../input/imc2023models/roma/roma_outdoor.pth
+
+ROMA_DINO_V2:
+  local: extra/pretrained_models/roma/dinov2_vitl14_pretrain.pth
+  kernel: ../input/imc2023models/roma/dinov2_vitl14_pretrain.pth
+
+OPENGLUE_MTLDESC_V4:
+  local: extra/pretrained_models/openglue/sg_mtldesc_v4
+  kernel: ../input/imc2023models/openglue/sg_mtldesc_v4
+
+SILK:
+  local: extra/pretrained_models/silk/coco-rgb-aug.ckpt
+  kernel: ../input/imc2023models/silk/coco-rgb-aug.ckpt
+
+FSNET_OUTDOOR:
+  local: extra/pretrained_models/fsnet/weights/outdoor_fundamentals.pth
+  kernel: ../input/imc2023models/fsnet/weights/outdoor_fundamentals.pth
+
+FSNET_OUTDOOR_CONFIG:
+  local: extra/pretrained_models/fsnet/config/conf.yaml
+  kernel: ../input/imc2023models/fsnet/config/conf.yaml
+
+FSNET_F:
+  local: extra/pretrained_models/fsnet/fundamentals.npy
+  kernel: ../input/imc2023models/fsnet/fundamentals.npy
+
+ASPANFORMER_OUTDOOR:
+  local: extra/pretrained_models/aspanformer/weights/outdoor.ckpt
+  kernel: ../input/imc2023models/aspanformer/weights/outdoor.ckpt
+
+ORINET:
+  local: extra/pretrained_models/hardnet/OriNet.pth
+  kernel: ../input/imc2023models/hardnet/OriNet.pth
+
+KEYNET:
+  local: extra/pretrained_models/hardnet/keynet_pytorch.pth
+  kernel: ../input/imc2023models/hardnet/keynet_pytorch.pth
+
+AFFNET:
+  local: extra/pretrained_models/hardnet/AffNet.pth
+  kernel: ../input/imc2023models/hardnet/AffNet.pth
+
+HARDNET_LIB:
+  local: extra/pretrained_models/hardnet/checkpoint_liberty_with_aug.pth
+  kernel: ../input/imc2023models/hardnet/checkpoint_liberty_with_aug.pth
+
+HARDNET_PP:
+  local: extra/pretrained_models/hardnet/hardnet_pp.pth
+  kernel: ../input/imc2023models/hardnet/hardnet_pp.pth
+
+HARDNET8:
+  local: extra/pretrained_models/hardnet/hardnet8v2.pt
+  kernel: ../input/imc2023models/hardnet/hardnet8v2.pt
+
+OPENGLUE_HARDNET:
+  local: extra/pretrained_models/hardnet/openglue
+  kernel: ../input/imc2023models/hardnet/openglue
+
+PANET:
+  local: extra/pretrained_models/panet/checkpoint.pth
+  kernel: ../input/imc2023models/panet/checkpoint.pth
+
+PIXLOC_MEGADEPTH:
+  local: extra/pretrained_models/pixloc_megadepth
+  kernel: ../input/imc2023models/pixloc_megadepth
+
+DINOV2_BASE:
+  local: extra/kagglehub/dinov2-base
+  kernel: /kaggle/input/dinov2/pytorch/base/1
+
+DINOV2_VIT_L14:
+  local: extra/pretrained_models/dinov2/dinov2_vitl14_pretrain.pth
+  kernel: ../input/imc2023models/dinov2/dinov2_vitl14_pretrain.pth
+
+ALIKED_LIGHTGLUE_N16:
+  local: extra/kagglehub/aliked-n16/aliked-n16.pth
+  kernel: /kaggle/input/aliked/pytorch/aliked-n16/1/aliked-n16.pth
+
+LIGHTGLUE_WITH_ALIKED_N16:
+  local: extra/kagglehub/aliked-lightglue/aliked_lightglue.pth
+  kernel: /kaggle/input/lightglue/pytorch/aliked/1/aliked_lightglue.pth
+
+LIGHTGLUE_WITH_DEDODE_B:
+  local: extra/pretrained_models/lightglue/dedodeb_lightglue.pth
+  kernel: ../input/imc2023models/lightglue/dedodeb_lightglue.pth
+
+LIGHTGLUE_WITH_DEDODE_G:
+  local: extra/pretrained_models/lightglue/dedodeg_lightglue.pth
+  kernel: ../input/imc2023models/lightglue/dedodeg_lightglue.pth
+
+LIGHTGLUE_WITH_DISK:
+  local: extra/pretrained_models/lightglue/disk_lightglue.pth
+  kernel: ../input/imc2023models/lightglue/disk_lightglue.pth
+
+LIGHTGLUE_WITH_SIFT:
+  local: extra/pretrained_models/lightglue/sift_lightglue.pth
+  kernel: ../input/imc2023models/lightglue/sift_lightglue.pth
+
+LIGHTGLUE_WITH_DOGHARDNET:
+  local: extra/pretrained_models/lightglue/doghardnet_lightglue.pth
+  kernel: ../input/imc2023models/lightglue/doghardnet_lightglue.pth
+
+LIGHTGLUE_WITH_SUPERPOINT:
+  local: extra/pretrained_models/lightglue/superpoint_lightglue.pth
+  kernel: ../input/imc2023models/lightglue/superpoint_lightglue.pth
+
+DEDODE_DETECTOR_L:
+  local: extra/pretrained_models/dedode/dedode_detector_L.pth
+  kernel: ../input/imc2023models/dedode/dedode_detector_L.pth
+
+DEDODE_DESCRIPTOR_B:
+  local: extra/pretrained_models/dedode/dedode_descriptor_B.pth
+  kernel: ../input/imc2023models/dedode/dedode_descriptor_B.pth
+
+DEDODE_DESCRIPTOR_G:
+  local: extra/pretrained_models/dedode/dedode_descriptor_G.pth
+  kernel: ../input/imc2023models/dedode/dedode_descriptor_G.pth
+
+GLUESTICK:
+  local: models/gluestick/resources/weights/checkpoint_GlueStick_MD.tar
+  kernel: ../input/ns64-imc2025lib/gluestick/checkpoint_GlueStick_MD.tar
+
+DOPPELGANGERS:
+  local: extra/pretrained_models/doppelgangers/doppelgangers_classifier_loftr.pt
+  kernel: ../input/imc2023models/doppelgangers/doppelgangers_classifier_loftr.pt
+
+DOPPELGANGERS_LOFTR:
+  local: extra/pretrained_models/doppelgangers/outdoor_ds.ckpt
+  kernel: ../input/imc2023models/doppelgangers/outdoor_ds.ckpt
+
+RELF_RN18:
+  local: extra/pretrained_models/relf/best_model.pt
+  kernel: ../input/imc2023models/relf/best_model.pt
+
+RELF_WRN:
+  local: extra/pretrained_models/relf/best_model_wrn.pt
+  kernel: ../input/imc2023models/relf/best_model_wrn.pt
+
+XFEAT:
+  local: extra/pretrained_models/xfeat/xfeat.pt
+  kernel: ../input/imc2023models/xfeat/xfeat.pt
+
+STEERER_B_C4_PERM_DEDODE_DESC_SETTING_C:
+  local: extra/pretrained_models/steerers/B_C4_Perm_descriptor_setting_C.pth
+  kernel: ../input/imc2023models/steerers/B_C4_Perm_descriptor_setting_C.pth
+
+STEERER_B_C4_PERM_STEERER_SETTING_C:
+  local: extra/pretrained_models/steerers/B_C4_Perm_steerer_setting_C.pth
+  kernel: ../input/imc2023models/steerers/B_C4_Perm_steerer_setting_C.pth
+
+STEERER_B_C4_STEERER_SETTING_A:
+  local: extra/pretrained_models/steerers/B_C4_steerer_setting_A.pth
+  kernel: ../input/imc2023models/steerers/B_C4_steerer_setting_A.pth
+
+STEERER_B_SO2_SPREAD_DEDODE_DESC_SETTING_B:
+  local: extra/pretrained_models/steerers/B_SO2_Spread_descriptor_setting_B.pth
+  kernel: ../input/imc2023models/steerers/B_SO2_Spread_descriptor_setting_B.pth
+
+STEERER_B_SO2_SPREAD_STEERER_SETTING_B:
+  local: extra/pretrained_models/steerers/B_SO2_Spread_steerer_setting_B.pth
+  kernel: ../input/imc2023models/steerers/B_SO2_Spread_steerer_setting_B.pth
+
+CHECK_ORIENTATION_MODEL:
+  local: extra/pretrained_models/check_orientation/2020-11-16_resnext50_32x4d.pth
+  kernel: ../input/imc2023models/check_orientation/2020-11-16_resnext50_32x4d.pth
+
+CHECK_ORIENTATION_CONFIG:
+  local: extra/pretrained_models/check_orientation/2020-11-16.yaml
+  kernel: ../input/imc2023models/check_orientation/2020-11-16.yaml
+
+EFFICIENT_LOFTR_OUTDOOR:
+  local: extra/pretrained_models/efficient_loftr/eloftr_outdoor.ckpt
+  kernel: ../input/imc2023models/efficient_loftr/eloftr_outdoor.ckpt
+
+FFTFORMER_REALBLUR_J:
+  local: extra/pretrained_models/fftformer/net_g_Realblur_J.pth
+  kernel: ../input/imc2023models/fftformer/net_g_Realblur_J.pth
+
+FFTFORMER_REALBLUR_R:
+  local: extra/pretrained_models/fftformer/net_g_Realblur_R.pth
+  kernel: ../input/imc2023models/fftformer/net_g_Realblur_R.pth
+
+FFTFORMER_GOPRO:
+  local: extra/pretrained_models/fftformer/fftformer_GoPro.pth
+  kernel: ../input/imc2023models/fftformer/fftformer_GoPro.pth
+
+LIMAP_MODELS:
+  local: extra/pretrained_models/limap
+  kernel: ../input/imc2023models/limap
+
+HF_DEPTH_ANYTHING_LARGE:
+  local: extra/pretrained_models/depth_anything/models--LiheYoung--depth-anything-large-hf/snapshots/27ccb0920352c0c37b3a96441873c8d37bd52fb6
+  kernel: ../input/imc2023models/depth_anything/models--LiheYoung--depth-anything-large-hf/snapshots/27ccb0920352c0c37b3a96441873c8d37bd52fb6
+
+DINOV2_SALAD:
+  local: extra/pretrained_models/dinov2_salad/dino_salad.ckpt
+  kernel: ../input/imc2023models/dinov2_salad/dino_salad.ckpt
+
+DINOV2_VITB14:
+  local: extra/pretrained_models/dinov2_salad/dinov2_vitb14_pretrain.pth
+  kernel: ../input/imc2023models/dinov2_salad/dinov2_vitb14_pretrain.pth
+
+OMNIGLUE_ONNX:
+  local: extra/pretrained_models/omniglue_onnx/omniglue.onnx
+  kernel: ../input/imc2023models/omniglue_onnx/omniglue.onnx
+
+OMNIGLUE_ONNX_SP_V6:
+  local: extra/pretrained_models/omniglue_onnx/sp_v6.onnx
+  kernel: ../input/imc2023models/omniglue_onnx/sp_v6.onnx
+
+PATCH_NETVLAD_LANDMARKS:
+  local: extra/pretrained_models/patch_netvlad/landmarks_WPCA4096.pth.tar
+  kernel: ../input/imc2023models/patch_netvlad/landmarks_WPCA4096.pth.tar
+
+VGG16:
+  local: extra/pretrained_models/vgg16/vgg16-397923af.pth
+  kernel: ../input/imc2023models/vgg16/vgg16-397923af.pth
+
+MICKEY_MODEL:
+  local: extra/pretrained_models/mickey/mickey_weights/mickey.ckpt
+  kernel: ../input/imc2023models/mickey/mickey_weights/mickey.ckpt
+
+MICKEY_CONFIG:
+  local: extra/pretrained_models/mickey/mickey_weights/config.yaml
+  kernel: ../input/imc2023models/mickey/mickey_weights/config.yaml
+
+GIM_SUPERPOINT_LIGHTGLUE:
+  local: extra/pretrained_models/gim/gim_lightglue_100h.ckpt
+  kernel: ../input/imc2023models/gim/gim_lightglue_100h.ckpt
+
+GIM_DKM:
+  local: extra/pretrained_models/gim/gim_dkm_100h.ckpt
+  kernel: ../input/imc2023models/gim/gim_dkm_100h.ckpt
+
+GIM_LIGHTGLUE_WITH_SUPERPOINT:
+  local: extra/pretrained_models/gim/superpoint_lightglue_v0-1_arxiv.pth
+  kernel: ../input/imc2023models/gim/superpoint_lightglue_v0-1_arxiv.pth
+
+HF_GROUNDING_DINO_BASE:
+  local: extra/pretrained_models/grounded_sam/models--IDEA-Research--grounding-dino-base/snapshots/12bdfa3120f3e7ec7b434d90674b3396eccf88eb
+  kernel: ./hf_grounding_dino_base
+  #kernel: ../input/imc2023models/grounded_sam/models--IDEA-Research--grounding-dino-base/snapshots/12bdfa3120f3e7ec7b434d90674b3396eccf88eb
+
+HF_SAM_VIT_BASE:
+  local: extra/pretrained_models/grounded_sam/models--facebook--sam-vit-base/snapshots/70c1a07f894ebb5b307fd9eaaee97b9dfc16068f
+  kernel: ./hf_sam_vit_base
+  #kernel: ../input/imc2023models/grounded_sam/models--facebook--sam-vit-base/snapshots/70c1a07f894ebb5b307fd9eaaee97b9dfc16068f
+
+DARKFEAT:
+  local: extra/pretrained_models/darkfeat/DarkFeat.pth
+  kernel: ../input/imc2023models/darkfeat/DarkFeat.pth
+
+DELF_PYTORCH:
+  local: extra/pretrained_models/delf_pytorch/fix.pth.tar
+  kernel: ../input/imc2023models/delf_pytorch/fix.pth.tar
+
+DEDODE_V2_DETECTOR_L:
+  local: extra/pretrained_models/dedode_v2/dedode_detector_L_v2.pth
+  kernel: ../input/imc2025models/dedode_v2/dedode_detector_L_v2.pth
+
+MAST3R:
+  local: extra/pretrained_models/mast3r/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth
+  kernel: ../input/imc2025models/mast3r/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth
+
+MAST3R_RETRIEVAL:
+  local: extra/pretrained_models/mast3r_retrieval/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_trainingfree.pth
+  kernel: ../input/imc2025models/mast3r_retrieval/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_trainingfree.pth
+
+MAST3R_RETRIEVAL_CODEBOOK:
+  local: extra/pretrained_models/mast3r_retrieval/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_codebook.pkl
+  kernel: ../input/imc2025models/mast3r_retrieval/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_codebook.pkl
+
+GIM_LOFTR:
+  local: extra/pretrained_models/gim_loftr/gim_loftr_50h.ckpt
+  kernel: ../input/imc2025models/gim_loftr/gim_loftr_50h.ckpt
+
+VGGT:
+  local: /home/longpm/.cache/huggingface/hub/models--facebook--VGGT-1B/snapshots/860abec7937da0a4c03c41d3c269c366e82abdf9
+  kernel: ./hf_vggt_1b
+
+DAD:
+  local: extra/pretrained_models/dad/dad.pth
+  kernel: ../input/imc2025models/dad/dad.pth
+
+EDGEPOINT2_L64:
+  local: extra/pretrained_models/edgepoint2/L64.pth
+  kernel: ../input/imc2025models/edgepoint2/L64.pth
+
+VGGT_FIX:
+  local: extra/pretrained_models/vggt/model_tracker_fixed_e20.pt
+  kernel: ../input/imc2025models/vggt/model_tracker_fixed_e20.pt
+
+SIGLIP2_SO400M_PATCH14_384:
+  local: extra/pretrained_models/siglip2/models--google--siglip2-so400m-patch14-384/snapshots/e8e487298228002f3d8a82e0cd5c8ea9c567f57f
+  kernel: ./siglip2_so400m_patch14_384
+
+ISC:
+  local: extra/pretrained_models/isc/isc_ft_v107.pth.tar
+  kernel: ../input/imc2025models/isc/isc_ft_v107.pth.tar
+
+DEPTH_ANYTHING_V2_L:
+  local: extra/pretrained_models/depth_anything_v2/depth_anything_v2_vitl.pth
+  kernel: ../input/imc2025models/depth_anything_v2/depth_anything_v2_vitl.pth
+
+MINIMA_LG:
+  local: extra/pretrained_models/minima/minima_lightglue.pth
+  kernel: ../input/imc2025models/minima/minima_lightglue.pth
+
+MINIMA_LOFTR:
+  local: extra/pretrained_models/minima/minima_loftr.ckpt
+  kernel: ../input/imc2025models/minima/minima_loftr.ckpt
